@@ -5,37 +5,25 @@ import nltk
 from gensim.models import KeyedVectors
 from tqdm import tqdm
 
-from config import train_translation_folder, train_translation_zh_filename, train_translation_en_filename
+from config import train_translation_folder, train_translation_path
 
 
 def train_length_zh():
     print('train_length_zh')
-    translation_path = os.path.join(train_translation_folder, train_translation_zh_filename)
 
-    with open(translation_path, 'r') as f:
-        data = f.readlines()
+    with open(train_translation_path, 'r') as f:
+        lines = f.readlines()
 
-    max_len = 0
-    lengthes = []
+    eng_sen_list = []
+    chn_sen_list = []
     print('scanning train data (zh)')
-    for sentence in tqdm(data):
-        length = len(sentence.strip().lower())
-        lengthes.append(length)
-        if length > max_len:
-            max_len = length
-
-    print('max_len: ' + str(max_len))
-
-    counter_length = Counter(lengthes)
-
-    total_count = len(data)
-    common = counter_length.most_common()
-    covered_count = 0
-    for i in range(1, max_len + 1):
-        count = [item[1] for item in common if item[0] == i]
-        if count:
-            covered_count += count[0]
-        print('{} -> {}'.format(i, covered_count / total_count))
+    for line in tqdm(lines):
+        tokens = line.split('\t')
+        eng_sen = tokens[2].strip()
+        chn_sen = tokens[3].strip()
+        eng_sen_list.append(eng_sen)
+        chn_sen_list.append(chn_sen)
+    print('len(eng_sen_list): ' + str(len(eng_sen_list)))
 
 
 def train_length_en():
@@ -103,5 +91,5 @@ def train_vocab_en():
 
 if __name__ == '__main__':
     train_length_zh()
-    train_length_en()
-    train_vocab_en()
+    # train_length_en()
+    # train_vocab_en()

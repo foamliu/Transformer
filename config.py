@@ -20,10 +20,9 @@ test_a_folder = 'data/ai_challenger_ect2018_testA_20180827'
 test_b_folder = 'data/ai_challenger_translation_test_b_20171128'
 train_translation_folder = os.path.join(train_folder, 'translation_train_20170912')
 valid_translation_folder = os.path.join(valid_folder, 'translation_validation_20170912')
-train_translation_en_filename = 'train.en'
-train_translation_zh_filename = 'train.zh'
-valid_translation_en_filename = 'valid.en'
-valid_translation_zh_filename = 'valid.zh'
+train_translation_path = 'data/ai_challenger_MTEnglishtoChinese_trainingset_20180827/ai_challenger_MTEnglishtoChinese_trainingset_20180827.txt'
+valid_translation_en_filename = 'data/ai_challenger_MTEnglishtoChinese_validationset_20180823/ai_challenger_MTEnglishtoChinese_validationset_20180823_en.sgm'
+valid_translation_zh_filename = 'data/ai_challenger_MTEnglishtoChinese_validationset_20180823/ai_challenger_MTEnglishtoChinese_validationset_20180823_zh.sgm'
 
 start_word = '<start>'
 stop_word = '<end>'

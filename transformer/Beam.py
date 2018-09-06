@@ -6,8 +6,9 @@
 """
 
 import torch
-import numpy as np
+
 import transformer.Constants as Constants
+
 
 class Beam():
     ''' Beam search '''
@@ -52,8 +53,8 @@ class Beam():
 
         flat_beam_lk = beam_lk.view(-1)
 
-        best_scores, best_scores_id = flat_beam_lk.topk(self.size, 0, True, True) # 1st sort
-        best_scores, best_scores_id = flat_beam_lk.topk(self.size, 0, True, True) # 2nd sort
+        best_scores, best_scores_id = flat_beam_lk.topk(self.size, 0, True, True)  # 1st sort
+        best_scores, best_scores_id = flat_beam_lk.topk(self.size, 0, True, True)  # 2nd sort
 
         self.all_scores.append(self.scores)
         self.scores = best_scores
@@ -97,7 +98,7 @@ class Beam():
         """ Walk back to construct the full hypothesis. """
         hyp = []
         for j in range(len(self.prev_ks) - 1, -1, -1):
-            hyp.append(self.next_ys[j+1][k])
+            hyp.append(self.next_ys[j + 1][k])
             k = self.prev_ks[j][k]
 
         return list(map(lambda x: x.item(), hyp[::-1]))

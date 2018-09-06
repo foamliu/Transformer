@@ -1,6 +1,7 @@
 '''A wrapper class for optimizer '''
 import numpy as np
 
+
 class ScheduledOptim():
     '''A simple wrapper class for learning rate scheduling'''
 
@@ -32,4 +33,3 @@ class ScheduledOptim():
 
         for param_group in self._optimizer.param_groups:
             param_group['lr'] = lr
-
