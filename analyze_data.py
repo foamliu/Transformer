@@ -6,7 +6,7 @@ import nltk
 from gensim.models import KeyedVectors
 from tqdm import tqdm
 
-from config import train_translation_folder, valid_translation_en_filename, valid_translation_zh_filename
+from config import train_translation_path, valid_translation_en_filename, valid_translation_zh_filename
 
 
 def count_train_samples():
