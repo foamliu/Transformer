@@ -1,5 +1,6 @@
 import random
 import xml
+import xml.etree.ElementTree
 
 import jieba
 import numpy as np
