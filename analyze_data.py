@@ -24,6 +24,8 @@ def train_length_zh():
         eng_sen_list.append(eng_sen)
         chn_sen_list.append(chn_sen)
     print('len(eng_sen_list): ' + str(len(eng_sen_list)))
+    print(eng_sen_list[0])
+    print(chn_sen_list[0])
 
 
 def train_length_en():
