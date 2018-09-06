@@ -32,6 +32,12 @@ def count_train_samples():
 def count_valid_samples():
     print('counting valid samples')
 
+    with open(valid_translation_en_filename, 'r') as f:
+        data_en = f.readlines()
+    data_en = [line.replace(' & ', ' &amp; ') for line in data_en]
+    with open(valid_translation_en_filename, 'w') as f:
+        f.writelines(data_en)
+
     root = xml.etree.ElementTree.parse(valid_translation_en_filename).getroot()
     data_en = [elem.text.strip().split('\t')[2] for elem in root.iter() if elem.tag == 'seg']
     root = xml.etree.ElementTree.parse(valid_translation_zh_filename).getroot()
