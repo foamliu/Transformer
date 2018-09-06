@@ -10,7 +10,7 @@ from config import train_translation_path, valid_translation_en_filename, valid_
 
 
 def count_train_samples():
-    print('train_length_zh')
+    print('count train samples')
 
     with open(train_translation_path, 'r') as f:
         lines = f.readlines()
@@ -30,6 +30,8 @@ def count_train_samples():
 
 
 def count_valid_samples():
+    print('counting valid samples')
+
     root = xml.etree.ElementTree.parse(valid_translation_en_filename).getroot()
     data_en = [elem.text.strip().split('\t')[2] for elem in root.iter() if elem.tag == 'seg']
     root = xml.etree.ElementTree.parse(valid_translation_zh_filename).getroot()
