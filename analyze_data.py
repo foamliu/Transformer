@@ -1,14 +1,15 @@
 import os
+import xml
 from collections import Counter
 
 import nltk
 from gensim.models import KeyedVectors
 from tqdm import tqdm
 
-from config import train_translation_folder, train_translation_path
+from config import train_translation_folder, valid_translation_en_filename, valid_translation_zh_filename
 
 
-def train_length_zh():
+def count_train_samples():
     print('train_length_zh')
 
     with open(train_translation_path, 'r') as f:
@@ -26,6 +27,17 @@ def train_length_zh():
     print('len(eng_sen_list): ' + str(len(eng_sen_list)))
     print(eng_sen_list[0])
     print(chn_sen_list[0])
+
+
+def count_valid_samples():
+    root = xml.etree.ElementTree.parse(valid_translation_en_filename).getroot()
+    data_en = [elem.text.strip().split('\t')[2] for elem in root.iter() if elem.tag == 'seg']
+    root = xml.etree.ElementTree.parse(valid_translation_zh_filename).getroot()
+    data_zh = [elem.text.strip() for elem in root.iter() if elem.tag == 'seg']
+    print('len(data_en): ' + str(len(data_en)))
+    print('len(data_zh): ' + str(len(data_zh)))
+    print(data_en[0])
+    print(data_zh[0])
 
 
 def train_length_en():
@@ -92,6 +104,7 @@ def train_vocab_en():
 
 
 if __name__ == '__main__':
-    train_length_zh()
+    count_train_samples()
+    count_valid_samples()
     # train_length_en()
     # train_vocab_en()
