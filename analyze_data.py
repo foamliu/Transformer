@@ -89,7 +89,7 @@ def count_train_length_zh():
     print('scanning train data (en)')
     for line in tqdm(lines):
         tokens = line.split('\t')
-        chn_sen = tokens[1].strip().lower()
+        chn_sen = tokens[3].strip().lower()
         seg_list = jieba.cut(chn_sen)
         length = len([w for w in seg_list])
         lengthes.append(length)
