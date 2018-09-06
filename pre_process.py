@@ -139,13 +139,13 @@ if __name__ == '__main__':
     if not os.path.isdir(test_a_folder):
         extract(test_a_folder)
 
-    if not os.path.isdir(test_b_folder):
-        extract(test_b_folder)
-
-    if not os.path.isfile('data/vocab_train_zh.p'):
-        build_train_vocab_zh()
-
-    extract_valid_data()
-
-    if not os.path.isfile('data/samples_train.p') or not os.path.isfile('data/samples_valid.p'):
-        build_samples()
+    # if not os.path.isdir(test_b_folder):
+    #     extract(test_b_folder)
+    #
+    # if not os.path.isfile('data/vocab_train_zh.p'):
+    #     build_train_vocab_zh()
+    #
+    # extract_valid_data()
+    #
+    # if not os.path.isfile('data/samples_train.p') or not os.path.isfile('data/samples_valid.p'):
+    #     build_samples()
