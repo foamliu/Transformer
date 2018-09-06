@@ -10,7 +10,7 @@ from config import train_translation_path, valid_translation_en_filename, valid_
 
 
 def count_train_samples():
-    print('count train samples')
+    print('counting train samples')
 
     with open(train_translation_path, 'r') as f:
         lines = f.readlines()
@@ -37,6 +37,12 @@ def count_valid_samples():
     data_en = [line.replace('&', '&amp;') for line in data_en]
     with open(valid_translation_en_filename, 'w') as f:
         f.writelines(data_en)
+
+    with open(valid_translation_zh_filename, 'r') as f:
+        data_zh = f.readlines()
+    data_zh = [line.replace('<了不起的盖茨比>', '《了不起的盖茨比》') for line in data_zh]
+    with open(valid_translation_zh_filename, 'w') as f:
+        f.writelines(data_zh)
 
     root = xml.etree.ElementTree.parse(valid_translation_en_filename).getroot()
     data_en = [elem.text.strip().split('\t')[2] for elem in root.iter() if elem.tag == 'seg']
