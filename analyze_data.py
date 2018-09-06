@@ -34,7 +34,7 @@ def count_valid_samples():
 
     with open(valid_translation_en_filename, 'r') as f:
         data_en = f.readlines()
-    data_en = [line.replace(' & ', ' &amp; ') for line in data_en]
+    data_en = [line.replace('&', '&amp;') for line in data_en]
     with open(valid_translation_en_filename, 'w') as f:
         f.writelines(data_en)
 
