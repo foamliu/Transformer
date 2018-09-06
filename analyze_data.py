@@ -1,10 +1,10 @@
 import random
 import xml
 
-import nltk
+import jieba
 import numpy as np
 from tqdm import tqdm
-import jieba
+
 from config import train_translation_path, valid_translation_en_filename, valid_translation_zh_filename
 
 
@@ -61,6 +61,8 @@ def count_valid_samples():
 
 
 def count_train_length_en():
+    import nltk
+    nltk.download('punkt')
     print('counting train length en')
     with open(train_translation_path, 'r') as f:
         lines = f.readlines()
