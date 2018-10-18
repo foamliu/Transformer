@@ -16,7 +16,7 @@
 
 可以从这里下载：[英中翻译数据集](https://challenger.ai/datasets/translation)
 
-![image](https://github.com/foamliu/Machine-Translation/raw/master/images/dataset.png)
+![image](https://github.com/foamliu/Transformer/raw/master/images/dataset.png)
 
 ## 用法
 
