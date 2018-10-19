@@ -17,7 +17,6 @@ hidden_size = 1024
 train_folder = 'data/ai_challenger_ect2018_trainingset_20180827'
 valid_folder = 'data/ai_challenger_ect2018_validationset_20180823'
 test_a_folder = 'data/ai_challenger_ect2018_testA_20180827'
-test_b_folder = 'data/ai_challenger_translation_test_b_20171128'
 train_translation_folder = os.path.join(train_folder, 'translation_train_20170912')
 valid_translation_folder = os.path.join(valid_folder, 'translation_validation_20170912')
 train_translation_path = 'data/ai_challenger_MTEnglishtoChinese_trainingset_20180827/ai_challenger_MTEnglishtoChinese_trainingset_20180827.txt'
