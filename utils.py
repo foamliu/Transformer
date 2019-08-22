@@ -172,5 +172,5 @@ def text_to_sequence(text, char2idx):
 
 
 def sequence_to_text(seq, idx2char):
-    result = [idx2char[str(idx)] for idx in seq]
+    result = [idx2char[idx] for idx in seq]
     return result
