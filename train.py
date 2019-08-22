@@ -36,7 +36,7 @@ def train_net(args):
                           tgt_emb_prj_weight_sharing=args.tgt_emb_prj_weight_sharing,
                           pe_maxlen=args.pe_maxlen)
         model = Transformer(encoder, decoder)
-        # print(model)
+        print(model)
         # model = nn.DataParallel(model)
 
         # optimizer
@@ -49,7 +49,6 @@ def train_net(args):
         epochs_since_improvement = checkpoint['epochs_since_improvement']
         model = checkpoint['model']
         optimizer = checkpoint['optimizer']
-        optimizer.update_lr(args.lr)
 
     logger = get_logger()
 
