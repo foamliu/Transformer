@@ -8,8 +8,8 @@ epochs = 10000
 embedding_size = 300
 hidden_size = 1024
 vocab_file = 'vocab.pkl'
-n_src_vocab = 191
-n_tgt_vocab = 8279  # target
+n_src_vocab = 192
+n_tgt_vocab = 8280  # target
 
 # Training parameters
 grad_clip = 5.  # clip gradients at an absolute value of
@@ -18,8 +18,9 @@ checkpoint = None  # path to checkpoint, None if none
 
 # Data parameters
 IGNORE_ID = -1
-sos_id = 0
-eos_id = 1
+pad_id = 0
+sos_id = 1
+eos_id = 2
 num_train = 10000000
 num_valid = 8000
 

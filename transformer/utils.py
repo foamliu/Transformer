@@ -1,3 +1,5 @@
+from config import pad_id
+
 def pad_list(xs, pad_value):
     # From: espnet/src/nets/e2e_asr_th.py: pad_list()
     n_batch = len(xs)
@@ -94,22 +96,9 @@ def add_results_to_json(js, nbest_hyps, char_list):
 import torch
 
 
-def get_non_pad_mask(padded_input, input_lengths=None, pad_idx=None):
-    """padding position is set to 0, either use input_lengths or pad_idx
-    """
-    assert input_lengths is not None or pad_idx is not None
-    if input_lengths is not None:
-        # padded_input: N x T x ..
-        N = padded_input.size(0)
-        non_pad_mask = padded_input.new_ones(padded_input.size()[:-1])  # N x T
-        for i in range(N):
-            non_pad_mask[i, input_lengths[i]:] = 0
-    if pad_idx is not None:
-        # padded_input: N x T
-        assert padded_input.dim() == 2
-        non_pad_mask = padded_input.ne(pad_idx).float()
-    # unsqueeze(-1) for broadcast
-    return non_pad_mask.unsqueeze(-1)
+def get_non_pad_mask(seq):
+    assert seq.dim() == 2
+    return seq.ne(pad_id).type(torch.float).unsqueeze(-1)
 
 
 def get_subsequent_mask(seq):

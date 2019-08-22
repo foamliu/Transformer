@@ -24,10 +24,10 @@ def process(file, word2idx, idx2char):
 
 
 if __name__ == '__main__':
-    src_char2idx = {'<sos>': 0, '<eos>': 1}
-    src_idx2char = {0: '<sos>', 1: '<eos>'}
-    tgt_char2idx = {'<sos>': 0, '<eos>': 1}
-    tgt_idx2char = {0: '<sos>', 1: '<eos>'}
+    src_char2idx = {'<pad>': 0, '<sos>': 1, '<eos>': 2}
+    src_idx2char = {0: '<pad>', 1: '<sos>', 2: '<eos>'}
+    tgt_char2idx = {'<pad>': 0, '<sos>': 1, '<eos>': 2}
+    tgt_idx2char = {0: '<pad>', 1: '<sos>', 2: '<eos>'}
 
     process(train_translation_en_filename, src_char2idx, src_idx2char)
     process(train_translation_zh_filename, tgt_char2idx, tgt_idx2char)
