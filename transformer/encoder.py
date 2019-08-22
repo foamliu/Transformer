@@ -81,8 +81,6 @@ class EncoderLayer(nn.Module):
     def forward(self, enc_input, non_pad_mask=None, slf_attn_mask=None):
         enc_output, enc_slf_attn = self.slf_attn(
             enc_input, enc_input, enc_input, mask=slf_attn_mask)
-        print('non_pad_mask.dtype: ' + str(non_pad_mask.dtype))
-        print('enc_output.dtype: ' + str(enc_output.dtype))
         enc_output *= non_pad_mask
 
         enc_output = self.pos_ffn(enc_output)
