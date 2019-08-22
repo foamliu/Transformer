@@ -6,7 +6,7 @@ from torch.utils.data.dataloader import default_collate
 
 from config import train_translation_en_filename, train_translation_zh_filename, valid_translation_en_filename, \
     valid_translation_zh_filename
-from config import vocab_file, IGNORE_ID, eos_id
+from config import vocab_file, IGNORE_ID, eos_id, pad_id
 from utils import text_to_sequence
 
 
@@ -29,7 +29,7 @@ def pad_collate(batch):
     for i, elem in enumerate(batch):
         src, tgt = elem
         input_length = len(src)
-        padded_input = np.pad(src, (0, max_input_len - len(src)), 'constant', constant_values=0)
+        padded_input = np.pad(src, (0, max_input_len - len(src)), 'constant', constant_values=pad_id)
         padded_target = np.pad(tgt, (0, max_target_len - len(tgt)), 'constant', constant_values=IGNORE_ID)
         batch[i] = (padded_input, padded_target, input_length)
 

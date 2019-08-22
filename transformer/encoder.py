@@ -42,7 +42,7 @@ class Encoder(nn.Module):
         enc_slf_attn_list = []
 
         # Prepare masks
-        non_pad_mask = get_non_pad_mask(padded_input, input_lengths=input_lengths)
+        non_pad_mask = get_non_pad_mask(padded_input)
         length = padded_input.size(1)
         slf_attn_mask = get_attn_pad_mask(padded_input, input_lengths, length)
 
