@@ -1,5 +1,6 @@
 import torch.nn as nn
 
+from config import pad_id
 from .attention import MultiHeadAttention
 from .module import PositionalEncoding, PositionwiseFeedForward
 from .utils import get_non_pad_mask, get_attn_pad_mask
@@ -23,7 +24,7 @@ class Encoder(nn.Module):
         self.dropout_rate = dropout
         self.pe_maxlen = pe_maxlen
 
-        self.input_embedding = nn.Linear(n_src_vocab, d_model)
+        self.input_embedding = nn.Embedding(n_src_vocab, d_model, padding_idx=pad_id)
         self.positional_encoding = PositionalEncoding(d_model, max_len=pe_maxlen)
         self.dropout = nn.Dropout(dropout)
 
