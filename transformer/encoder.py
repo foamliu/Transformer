@@ -35,7 +35,7 @@ class Encoder(nn.Module):
     def forward(self, padded_input, input_lengths, return_attns=False):
         """
         Args:
-            padded_input: N x T x D
+            padded_input: N x T
             input_lengths: N
         Returns:
             enc_output: N x T x H
@@ -82,6 +82,8 @@ class EncoderLayer(nn.Module):
     def forward(self, enc_input, non_pad_mask=None, slf_attn_mask=None):
         enc_output, enc_slf_attn = self.slf_attn(
             enc_input, enc_input, enc_input, mask=slf_attn_mask)
+        print('type(non_pad_mask): ' + str(type(non_pad_mask)))
+        print('type(enc_output): ' + str(type(enc_output)))
         enc_output *= non_pad_mask
 
         enc_output = self.pos_ffn(enc_output)
