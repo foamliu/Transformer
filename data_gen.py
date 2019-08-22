@@ -56,7 +56,9 @@ class AiChallenger2017Dataset(Dataset):
             self.src = get_data(valid_translation_en_filename)
             self.dst = get_data(valid_translation_zh_filename)
 
-        print('loading {} pairs {} samples...'.format(len(self.src), split))
+        assert(len(self.src) == len(self.dst))
+
+        print('loading {} {} samples...'.format(len(self.src), split))
 
     def __getitem__(self, i):
         src_text = self.src[i]
