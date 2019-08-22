@@ -45,3 +45,27 @@ class AiChallenger2017Dataset(Dataset):
 
     def __len__(self):
         return len(self.src)
+
+
+if __name__ == "__main__":
+    from utils import sequence_to_text
+
+    valid_dataset = AiChallenger2017Dataset('valid')
+    print(valid_dataset[0])
+
+    with open(vocab_file, 'rb') as file:
+        data = pickle.load(file)
+
+    src_char2idx = data['dict']['src_char2idx']
+    src_idx2char = data['dict']['src_idx2char']
+    tgt_char2idx = data['dict']['tgt_char2idx']
+    tgt_idx2char = data['dict']['tgt_idx2char']
+
+    src_text, tgt_text = valid_dataset[0]
+    src_text = sequence_to_text(src_text, src_idx2char)
+    src_text = ''.join(src_text)
+    print('src_text: ' + src_text)
+
+    tgt_text = sequence_to_text(tgt_text, tgt_idx2char)
+    tgt_text = ''.join(src_text)
+    print('tgt_text: ' + tgt_text)
