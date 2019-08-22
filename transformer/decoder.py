@@ -91,10 +91,12 @@ class Decoder(nn.Module):
                                                      pad_idx=self.eos_id)
         slf_attn_mask = (slf_attn_mask_keypad + slf_attn_mask_subseq).gt(0)
 
-        output_length = ys_in_pad.size(1)
-        dec_enc_attn_mask = get_attn_pad_mask(encoder_padded_outputs,
-                                              encoder_input_lengths,
-                                              output_length)
+        # output_length = ys_in_pad.size(1)
+        # dec_enc_attn_mask = get_attn_pad_mask(encoder_padded_outputs,
+        #                                       encoder_input_lengths,
+        #                                       output_length)
+
+        dec_enc_attn_mask = get_attn_pad_mask(padded_input, padded_input)
 
         # Forward
         dec_output = self.dropout(self.tgt_word_emb(ys_in_pad) * self.x_logit_scale +
