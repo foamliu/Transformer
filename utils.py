@@ -164,3 +164,13 @@ def pad_list(xs, pad_value):
     for i in range(n_batch):
         pad[i, :xs[i].size(0)] = xs[i]
     return pad
+
+
+def text_to_sequence(text, char2idx):
+    result = [char2idx[char] for char in text]
+    return result
+
+
+def sequence_to_text(seq, idx2char):
+    result = [idx2char[str(idx)] for idx in seq]
+    return result

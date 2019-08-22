@@ -1,70 +1,47 @@
-# encoding=utf-8
 import pickle
 
-import numpy as np
-from gensim.models import KeyedVectors
-from keras.utils import Sequence
+from torch.utils.data import Dataset
 
-from config import batch_size, Tx, Ty, embedding_size
-from config import start_word, start_embedding, unknown_word, unknown_embedding, stop_word, stop_embedding
+from config import train_translation_en_filename, train_translation_zh_filename, valid_translation_en_filename, \
+    valid_translation_zh_filename
+from config import vocab_file
+from utils import text_to_sequence
 
 
-class DataGenSequence(Sequence):
-    def __init__(self, usage):
-        self.usage = usage
+def get_data(filename):
+    with open(filename, 'r') as file:
+        data = file.readlines()
+    data = [line.strip() for line in data]
+    return data
 
-        print('loading fasttext word embedding(en)')
-        self.word_vectors_en = KeyedVectors.load_word2vec_format('data/wiki.en.vec')
 
-        print('loading {} samples'.format(usage))
-        if usage == 'train':
-            samples_path = 'data/samples_train.p'
+class AiChallenger2017Dataset(Dataset):
+    def __init__(self, split):
+        with open(vocab_file, 'rb') as file:
+            data = pickle.load(file)
+
+        self.src_char2idx = data['dict']['src_char2idx']
+        self.src_idx2char = data['dict']['src_idx2char']
+        self.tgt_char2idx = data['dict']['tgt_char2idx']
+        self.tgt_idx2char = data['dict']['tgt_idx2char']
+
+        if split == 'train':
+            self.src = get_data(train_translation_en_filename)
+            self.dst = get_data(train_translation_zh_filename)
         else:
-            samples_path = 'data/samples_valid.p'
+            self.src = get_data(valid_translation_en_filename)
+            self.dst = get_data(valid_translation_zh_filename)
 
-        self.samples = pickle.load(open(samples_path, 'rb'))
-        np.random.shuffle(self.samples)
+        self.samples = data[split]
+        print('loading {} {} samples...'.format(len(self.samples), split))
+
+    def __getitem__(self, i):
+        src_text = self.src[i]
+        src_text = text_to_sequence(src_text, self.src_char2idx)
+        tgt_text = self.dst[i]
+        tgt_text = text_to_sequence(tgt_text, self.tgt_char2idx)
+
+        return src_text, tgt_text
 
     def __len__(self):
-        return int(np.ceil(len(self.samples) / float(batch_size)))
-
-    def __getitem__(self, idx):
-        i = idx * batch_size
-
-        length = min(batch_size, (len(self.samples) - i))
-
-        batch_x = np.zeros((length, Tx, embedding_size), np.float32)
-        batch_y = np.zeros((length, Ty), np.int32)
-
-        for i_batch in range(length):
-            sample = self.samples[i + i_batch]
-
-            input_size = min(Tx, len(sample['input']))
-            for idx in range(input_size):
-                word = sample['input'][idx]
-                if word == start_word:
-                    embedding = start_embedding
-                elif word == stop_word:
-                    embedding = stop_embedding
-                elif word == unknown_word:
-                    embedding = unknown_embedding
-                else:
-                    embedding = self.word_vectors_en[word]
-                batch_x[i_batch, idx] = embedding
-
-            output_size = min(Ty, len(sample['output']))
-            for idx in range(output_size):
-                batch_y[i_batch, idx] = sample['output'][idx]
-
-        return batch_x, batch_y
-
-    def on_epoch_end(self):
-        np.random.shuffle(self.samples)
-
-
-def train_gen():
-    return DataGenSequence('train')
-
-
-def valid_gen():
-    return DataGenSequence('valid')
+        return len(self.src)
