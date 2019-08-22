@@ -51,6 +51,7 @@ class Encoder(nn.Module):
         enc_output = self.dropout(
             self.input_embedding(padded_input) +
             self.positional_encoding(padded_input))
+        print('enc_output.size(): ' + str(enc_output.size()))
 
         for enc_layer in self.layer_stack:
             enc_output, enc_slf_attn = enc_layer(
