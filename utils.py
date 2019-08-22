@@ -115,9 +115,9 @@ def parse_args():
                         help='Batch size')
     parser.add_argument('--batch_frames', default=0, type=int,
                         help='Batch frames. If this is not 0, batch size will make no sense')
-    parser.add_argument('--maxlen-in', default=200, type=int, metavar='ML',
+    parser.add_argument('--maxlen-in', default=160, type=int, metavar='ML',
                         help='Batch size is reduced if the input sequence length > ML')
-    parser.add_argument('--maxlen-out', default=100, type=int, metavar='ML',
+    parser.add_argument('--maxlen-out', default=80, type=int, metavar='ML',
                         help='Batch size is reduced if the output sequence length > ML')
     parser.add_argument('--num-workers', default=4, type=int,
                         help='Number of workers to generate minibatch')
