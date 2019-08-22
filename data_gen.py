@@ -32,8 +32,7 @@ class AiChallenger2017Dataset(Dataset):
             self.src = get_data(valid_translation_en_filename)
             self.dst = get_data(valid_translation_zh_filename)
 
-        self.samples = data[split]
-        print('loading {} {} samples...'.format(len(self.samples), split))
+        print('loading {} pairs {} samples...'.format(len(self.src), split))
 
     def __getitem__(self, i):
         src_text = self.src[i]
@@ -67,5 +66,5 @@ if __name__ == "__main__":
     print('src_text: ' + src_text)
 
     tgt_text = sequence_to_text(tgt_text, tgt_idx2char)
-    tgt_text = ''.join(src_text)
+    tgt_text = ''.join(tgt_text)
     print('tgt_text: ' + tgt_text)
