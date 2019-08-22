@@ -11,6 +11,7 @@ from tqdm import tqdm
 from config import start_word, stop_word, unknown_word, Tx, Ty, vocab_size_zh
 from config import train_translation_folder, train_translation_path
 from config import valid_translation_folder, valid_translation_zh_filename, valid_translation_en_filename
+from config import train_translation_en_filename, train_translation_zh_filename
 
 
 def build_train_vocab_zh():
