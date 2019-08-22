@@ -130,6 +130,8 @@ def train(train_loader, model, optimizer, epoch, logger):
             logger.info('Epoch: [{0}][{1}/{2}]\t'
                         'Loss {loss.val:.5f} ({loss.avg:.5f})'.format(epoch, i, len(train_loader), loss=losses))
 
+        del loss, pred, gold
+
     return losses.avg
 
 
