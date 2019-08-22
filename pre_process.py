@@ -18,9 +18,15 @@ def process(file, word2idx, idx2char):
     with open(file, 'r', encoding='utf-8') as file:
         data = file.readlines()
 
+    max_length = 0
+
     for line in tqdm(data):
         for token in line.strip():
             build_vocab(token, word2idx, idx2char)
+
+        if len(line) > max_length:
+            max_length = len(line)
+    print('max_length: ' + str(max_length))
 
 
 if __name__ == '__main__':
