@@ -98,6 +98,7 @@ import torch
 
 
 def get_non_pad_mask(seq, pad_idx):
+    print('seq.dim(): ' + str(seq.dim()))
     assert seq.dim() == 2
     return seq.ne(pad_idx).type(torch.float).unsqueeze(-1)
 
