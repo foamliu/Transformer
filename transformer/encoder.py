@@ -44,7 +44,7 @@ class Encoder(nn.Module):
 
         # Forward
         enc_outputs = self.src_emb(padded_input)
-        enc_outputs += self.pos_emb(input_lengths)
+        enc_outputs += self.pos_emb(enc_outputs)
         enc_output = self.dropout(enc_outputs)
 
         # Prepare masks
