@@ -126,7 +126,7 @@ def get_attn_key_pad_mask(seq_k, seq_q, pad_idx):
 def get_attn_pad_mask(padded_input, input_lengths, expand_length):
     """mask position is set to 1"""
     # N x Ti x 1
-    non_pad_mask = get_non_pad_mask(padded_input, input_lengths=input_lengths)
+    non_pad_mask = get_non_pad_mask(padded_input)
     # N x Ti, lt(1) like not operation
     pad_mask = non_pad_mask.squeeze(-1).lt(1)
     attn_mask = pad_mask.unsqueeze(1).expand(-1, expand_length, -1)
