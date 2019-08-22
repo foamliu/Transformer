@@ -95,7 +95,6 @@ import torch
 
 
 def get_non_pad_mask(padded_input, input_lengths=None, pad_idx=None):
-    print('padded_input.size(): ' + str(padded_input.size()))
     """padding position is set to 0, either use input_lengths or pad_idx
     """
     assert input_lengths is not None or pad_idx is not None
