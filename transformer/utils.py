@@ -1,6 +1,3 @@
-from config import pad_id
-
-
 def pad_list(xs, pad_value):
     # From: espnet/src/nets/e2e_asr_th.py: pad_list()
     n_batch = len(xs)
@@ -137,17 +134,11 @@ def get_attn_key_pad_mask(seq_k, seq_q, pad_idx):
     return padding_mask
 
 
-# def get_attn_pad_mask(padded_input, input_lengths, expand_length):
-#     """mask position is set to 1"""
-#     # N x Ti x 1
-#     non_pad_mask = get_non_pad_mask(padded_input, pad_id)
-#     # N x Ti, lt(1) like not operation
-#     pad_mask = non_pad_mask.squeeze(-1).lt(1)
-#     attn_mask = pad_mask.unsqueeze(1).expand(-1, expand_length, -1)
-#     return attn_mask
-def get_attn_pad_mask(seq_q, seq_k):
-    assert seq_q.dim() == 2 and seq_k.dim() == 2
-    b_size, len_q = seq_q.size()
-    b_size, len_k = seq_k.size()
-    pad_attn_mask = seq_k.data.eq(pad_id).unsqueeze(1)  # b_size x 1 x len_k
-    return pad_attn_mask.expand(b_size, len_q, len_k)  # b_size x len_q x len_k
+def get_attn_pad_mask(padded_input, input_lengths, expand_length):
+    """mask position is set to 1"""
+    # N x Ti x 1
+    non_pad_mask = get_non_pad_mask(padded_input, input_lengths=input_lengths)
+    # N x Ti, lt(1) like not operation
+    pad_mask = non_pad_mask.squeeze(-1).lt(1)
+    attn_mask = pad_mask.unsqueeze(1).expand(-1, expand_length, -1)
+    return attn_mask
