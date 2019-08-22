@@ -98,8 +98,8 @@ import torch
 
 
 def get_non_pad_mask(seq, pad_idx):
-    print('seq.dim(): ' + str(seq.dim()))
-    assert seq.dim() == 2
+    # print('seq.dim(): ' + str(seq.dim()))
+    # assert seq.dim() == 2
     return seq.ne(pad_idx).type(torch.float).unsqueeze(-1)
 
 
@@ -125,9 +125,11 @@ def get_attn_key_pad_mask(seq_k, seq_q, pad_idx):
     return padding_mask
 
 
-def get_attn_pad_mask(seq_q, seq_k):
-    batch_size, len_q = seq_q.size()
-    batch_size, len_k = seq_k.size()
-    # eq(zero) is PAD token
-    pad_attn_mask = seq_k.data.eq(0).unsqueeze(1)  # batch_size x 1 x len_k(=len_q), one is masking
-    return pad_attn_mask.expand(batch_size, len_q, len_k)  # batch_size x len_q x len_k
+def get_attn_pad_mask(padded_input, input_lengths, expand_length):
+    """mask position is set to 1"""
+    # N x Ti x 1
+    non_pad_mask = get_non_pad_mask(padded_input, pad_id)
+    # N x Ti, lt(1) like not operation
+    pad_mask = non_pad_mask.squeeze(-1).lt(1)
+    attn_mask = pad_mask.unsqueeze(1).expand(-1, expand_length, -1)
+    return attn_mask
