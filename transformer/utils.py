@@ -1,5 +1,3 @@
-from config import pad_id
-
 def pad_list(xs, pad_value):
     # From: espnet/src/nets/e2e_asr_th.py: pad_list()
     n_batch = len(xs)
@@ -96,9 +94,9 @@ def add_results_to_json(js, nbest_hyps, char_list):
 import torch
 
 
-def get_non_pad_mask(seq):
+def get_non_pad_mask(seq, pad_idx):
     assert seq.dim() == 2
-    return seq.ne(pad_id).type(torch.float).unsqueeze(-1)
+    return seq.ne(pad_idx).type(torch.float).unsqueeze(-1)
 
 
 def get_subsequent_mask(seq):
