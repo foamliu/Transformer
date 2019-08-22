@@ -4,7 +4,6 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')  # sets de
 
 # Model parameters
 d_model = 512
-batch_size = 128
 epochs = 10000
 embedding_size = 300
 hidden_size = 1024
