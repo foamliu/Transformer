@@ -13,7 +13,7 @@ n_tgt_vocab = 8280  # target
 
 # Training parameters
 grad_clip = 5.  # clip gradients at an absolute value of
-print_freq = 100  # print training/validation stats  every __ batches
+print_freq = 10  # print training/validation stats  every __ batches
 checkpoint = None  # path to checkpoint, None if none
 
 # Data parameters
