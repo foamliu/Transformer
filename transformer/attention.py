@@ -30,6 +30,7 @@ class MultiHeadAttention(nn.Module):
         self.dropout = nn.Dropout(dropout)
 
     def forward(self, q, k, v, mask=None):
+        print('mask.size(): ' + str(mask.size()))
         d_k, d_v, n_head = self.d_k, self.d_v, self.n_head
 
         sz_b, len_q, _ = q.size()
@@ -48,7 +49,7 @@ class MultiHeadAttention(nn.Module):
 
         if mask is not None:
             mask = mask.repeat(n_head, 1, 1)  # (n*b) x .. x ..
-
+        print('mask.size(): ' + str(mask.size()))
         output, attn = self.attention(q, k, v, mask=mask)
 
         output = output.view(n_head, sz_b, len_q, d_v)
@@ -70,6 +71,7 @@ class ScaledDotProductAttention(nn.Module):
         self.softmax = nn.Softmax(dim=2)
 
     def forward(self, q, k, v, mask=None):
+        print('mask.size(): ' + str(mask.size()))
         attn = torch.bmm(q, k.transpose(1, 2))
         attn = attn / self.temperature
 
