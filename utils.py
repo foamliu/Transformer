@@ -74,16 +74,10 @@ def accuracy(scores, targets, k=1):
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Speech Transformer')
-    # Low Frame Rate (stacking and skipping frames)
-    parser.add_argument('--LFR_m', default=4, type=int,
-                        help='Low Frame Rate: number of frames to stack')
-    parser.add_argument('--LFR_n', default=3, type=int,
-                        help='Low Frame Rate: number of frames to skip')
+
     # Network architecture
     # encoder
     # TODO: automatically infer input dim
-    parser.add_argument('--d_input', default=80, type=int,
-                        help='Dim of encoder input (before LFR)')
     parser.add_argument('--n_layers_enc', default=6, type=int,
                         help='Number of encoder stacks')
     parser.add_argument('--n_head', default=8, type=int,

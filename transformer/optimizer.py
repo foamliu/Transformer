@@ -1,12 +1,14 @@
-"""A wrapper class for optimizer"""
+from config import d_model
 
 
 class TransformerOptimizer(object):
     """A simple wrapper class for learning rate scheduling"""
 
-    def __init__(self, optimizer):
+    def __init__(self, optimizer, warmup_steps=4000):
         self.optimizer = optimizer
-        self.lr = self.optimizer.param_groups[0]['lr']
+        self.init_lr = d_model ** (-0.5)
+        self.warmup_steps = warmup_steps
+        self.lr = self.init_lr
         self.step_num = 0
 
     def zero_grad(self):
@@ -18,8 +20,6 @@ class TransformerOptimizer(object):
 
     def _update_lr(self):
         self.step_num += 1
-
-    def update_lr(self, lr):
-        self.lr = lr
+        self.lr = self.init_lr * min(self.step_num ** (-0.5), self.step_num * (self.warmup_steps ** (-1.5)))
         for param_group in self.optimizer.param_groups:
-            param_group['lr'] = lr
+            param_group['lr'] = self.lr
