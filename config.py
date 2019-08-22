@@ -1,11 +1,14 @@
 import os
 import numpy as np
+import os
+
+import torch
+
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')  # sets device for model and PyTorch tensors
 
 batch_size = 128
 epochs = 10000
 patience = 50
-num_train_samples = 8852422
-num_valid_samples = 7613
 embedding_size = 300
 vocab_size_zh = 50000
 max_token_length_en = Tx = 20 + 1   # 1 is for tailing stop word
@@ -13,6 +16,17 @@ max_token_length_zh = Ty = 20 + 1   # 1 is for tailing stop word
 
 hidden_size = 1024
 
+# Training parameters
+grad_clip = 5.  # clip gradients at an absolute value of
+print_freq = 100  # print training/validation stats  every __ batches
+checkpoint = None  # path to checkpoint, None if none
+
+# Data parameters
+IGNORE_ID = -1
+sos_id = 0
+eos_id = 1
+num_train = 8852422
+num_valid = 7613
 
 train_folder = 'data/ai_challenger_ect2018_trainingset_20180827'
 valid_folder = 'data/ai_challenger_ect2018_validationset_20180823'

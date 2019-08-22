@@ -1,295 +1,170 @@
-'''
-This script handling the training process.
-'''
-
-import argparse
-import math
-import time
-
+import numpy as np
 import torch
-import torch.nn.functional as F
-import torch.optim as optim
-import torch.utils.data
-from dataset import TranslationDataset, paired_collate_fn
+from tensorboardX import SummaryWriter
+# from torch import nn
 from tqdm import tqdm
 
-import transformer.Constants as Constants
-from transformer.Models import Transformer
-from transformer.Optim import ScheduledOptim
+from config import device, print_freq, vocab_size, sos_id, eos_id
+from data_gen import AiShellDataset, pad_collate
+from transformer.decoder import Decoder
+from transformer.encoder import Encoder
+from transformer.loss import cal_performance
+from transformer.optimizer import TransformerOptimizer
+from transformer.transformer import Transformer
+from utils import parse_args, save_checkpoint, AverageMeter, get_logger
 
 
-def cal_performance(pred, gold, smoothing=False):
-    ''' Apply label smoothing if needed '''
+def train_net(args):
+    torch.manual_seed(7)
+    np.random.seed(7)
+    checkpoint = args.checkpoint
+    start_epoch = 0
+    best_loss = float('inf')
+    writer = SummaryWriter()
+    epochs_since_improvement = 0
 
-    loss = cal_loss(pred, gold, smoothing)
+    # Initialize / load checkpoint
+    if checkpoint is None:
+        # model
+        encoder = Encoder(args.d_input * args.LFR_m, args.n_layers_enc, args.n_head,
+                          args.d_k, args.d_v, args.d_model, args.d_inner,
+                          dropout=args.dropout, pe_maxlen=args.pe_maxlen)
+        decoder = Decoder(sos_id, eos_id, vocab_size,
+                          args.d_word_vec, args.n_layers_dec, args.n_head,
+                          args.d_k, args.d_v, args.d_model, args.d_inner,
+                          dropout=args.dropout,
+                          tgt_emb_prj_weight_sharing=args.tgt_emb_prj_weight_sharing,
+                          pe_maxlen=args.pe_maxlen)
+        model = Transformer(encoder, decoder)
+        # print(model)
+        # model = nn.DataParallel(model)
 
-    pred = pred.max(1)[1]
-    gold = gold.contiguous().view(-1)
-    non_pad_mask = gold.ne(Constants.PAD)
-    n_correct = pred.eq(gold)
-    n_correct = n_correct.masked_select(non_pad_mask).sum().item()
+        # optimizer
+        optimizer = TransformerOptimizer(
+            torch.optim.Adam(model.parameters(), lr=args.lr, betas=(0.9, 0.98), eps=1e-09))
 
-    return loss, n_correct
-
-
-def cal_loss(pred, gold, smoothing):
-    ''' Calculate cross entropy loss, apply label smoothing if needed. '''
-
-    gold = gold.contiguous().view(-1)
-
-    if smoothing:
-        eps = 0.1
-        n_class = pred.size(1)
-
-        one_hot = torch.zeros_like(pred).scatter(1, gold.view(-1, 1), 1)
-        one_hot = one_hot * (1 - eps) + (1 - one_hot) * eps / (n_class - 1)
-        log_prb = F.log_softmax(pred, dim=1)
-
-        non_pad_mask = gold.ne(Constants.PAD)
-        loss = -(one_hot * log_prb).sum(dim=1)
-        loss = loss.masked_select(non_pad_mask).sum()  # average later
     else:
-        loss = F.cross_entropy(pred, gold, ignore_index=Constants.PAD, reduction='sum')
+        checkpoint = torch.load(checkpoint)
+        start_epoch = checkpoint['epoch'] + 1
+        epochs_since_improvement = checkpoint['epochs_since_improvement']
+        model = checkpoint['model']
+        optimizer = checkpoint['optimizer']
+        optimizer.update_lr(args.lr)
 
-    return loss
+    logger = get_logger()
+
+    # Move to GPU, if available
+    model = model.to(device)
+
+    # Custom dataloaders
+    train_dataset = AiShellDataset(args, 'train')
+    train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=args.batch_size, collate_fn=pad_collate,
+                                               pin_memory=True, shuffle=True, num_workers=args.num_workers)
+    valid_dataset = AiShellDataset(args, 'dev')
+    valid_loader = torch.utils.data.DataLoader(valid_dataset, batch_size=args.batch_size, collate_fn=pad_collate,
+                                               pin_memory=True, shuffle=False, num_workers=args.num_workers)
+
+    # Epochs
+    for epoch in range(start_epoch, args.epochs):
+        # One epoch's training
+        train_loss = train(train_loader=train_loader,
+                           model=model,
+                           optimizer=optimizer,
+                           epoch=epoch,
+                           logger=logger)
+        writer.add_scalar('Train_Loss', train_loss, epoch)
+
+        lr = optimizer.lr
+        print('\nLearning rate: {}'.format(lr))
+        writer.add_scalar('Learning_Rate', lr, epoch)
+        step_num = optimizer.step_num
+        print('Step num: {}\n'.format(step_num))
+
+        # One epoch's validation
+        valid_loss = valid(valid_loader=valid_loader,
+                           model=model,
+                           logger=logger)
+        writer.add_scalar('Valid_Loss', valid_loss, epoch)
+
+        # Check if there was an improvement
+        is_best = valid_loss < best_loss
+        best_loss = min(valid_loss, best_loss)
+        if not is_best:
+            epochs_since_improvement += 1
+            print("\nEpochs since last improvement: %d\n" % (epochs_since_improvement,))
+        else:
+            epochs_since_improvement = 0
+
+        # Save checkpoint
+        save_checkpoint(epoch, epochs_since_improvement, model, optimizer, best_loss, is_best)
 
 
-def train_epoch(model, training_data, optimizer, device, smoothing):
-    ''' Epoch operation in training phase'''
+def train(train_loader, model, optimizer, epoch, logger):
+    model.train()  # train mode (dropout and batchnorm is used)
 
-    model.train()
+    losses = AverageMeter()
 
-    total_loss = 0
-    n_word_total = 0
-    n_word_correct = 0
+    # Batches
+    for i, (data) in enumerate(train_loader):
+        # Move to GPU, if available
+        padded_input, padded_target, input_lengths = data
+        padded_input = padded_input.to(device)
+        padded_target = padded_target.to(device)
+        input_lengths = input_lengths.to(device)
 
-    for batch in tqdm(
-            training_data, mininterval=2,
-            desc='  - (Training)   ', leave=False):
-        # prepare data
-        src_seq, src_pos, tgt_seq, tgt_pos = map(lambda x: x.to(device), batch)
-        gold = tgt_seq[:, 1:]
+        # Forward prop.
+        pred, gold = model(padded_input, input_lengths, padded_target)
+        loss, n_correct = cal_performance(pred, gold, smoothing=args.label_smoothing)
 
-        # forward
+        # Back prop.
         optimizer.zero_grad()
-        pred = model(src_seq, src_pos, tgt_seq, tgt_pos)
-
-        # backward
-        loss, n_correct = cal_performance(pred, gold, smoothing=smoothing)
         loss.backward()
 
-        # update parameters
-        optimizer.step_and_update_lr()
+        # Update weights
+        optimizer.step()
 
-        # note keeping
-        total_loss += loss.item()
+        # Keep track of metrics
+        losses.update(loss.item())
 
-        non_pad_mask = gold.ne(Constants.PAD)
-        n_word = non_pad_mask.sum().item()
-        n_word_total += n_word
-        n_word_correct += n_correct
+        # Print status
+        if i % print_freq == 0:
+            logger.info('Epoch: [{0}][{1}/{2}]\t'
+                        'Loss {loss.val:.5f} ({loss.avg:.5f})'.format(epoch, i, len(train_loader), loss=losses))
 
-    loss_per_word = total_loss / n_word_total
-    accuracy = n_word_correct / n_word_total
-    return loss_per_word, accuracy
+    return losses.avg
 
 
-def eval_epoch(model, validation_data, device):
-    ''' Epoch operation in evaluation phase '''
-
+def valid(valid_loader, model, logger):
     model.eval()
 
-    total_loss = 0
-    n_word_total = 0
-    n_word_correct = 0
+    losses = AverageMeter()
 
-    with torch.no_grad():
-        for batch in tqdm(
-                validation_data, mininterval=2,
-                desc='  - (Validation) ', leave=False):
-            # prepare data
-            src_seq, src_pos, tgt_seq, tgt_pos = map(lambda x: x.to(device), batch)
-            gold = tgt_seq[:, 1:]
+    # Batches
+    for data in tqdm(valid_loader):
+        # Move to GPU, if available
+        padded_input, padded_target, input_lengths = data
+        padded_input = padded_input.to(device)
+        padded_target = padded_target.to(device)
+        input_lengths = input_lengths.to(device)
 
-            # forward
-            pred = model(src_seq, src_pos, tgt_seq, tgt_pos)
-            loss, n_correct = cal_performance(pred, gold, smoothing=False)
+        with torch.no_grad():
+            # Forward prop.
+            pred, gold = model(padded_input, input_lengths, padded_target)
+            loss, n_correct = cal_performance(pred, gold, smoothing=args.label_smoothing)
 
-            # note keeping
-            total_loss += loss.item()
+        # Keep track of metrics
+        losses.update(loss.item())
 
-            non_pad_mask = gold.ne(Constants.PAD)
-            n_word = non_pad_mask.sum().item()
-            n_word_total += n_word
-            n_word_correct += n_correct
+    # Print status
+    logger.info('\nValidation Loss {loss.val:.5f} ({loss.avg:.5f})\n'.format(loss=losses))
 
-    loss_per_word = total_loss / n_word_total
-    accuracy = n_word_correct / n_word_total
-    return loss_per_word, accuracy
-
-
-def train(model, training_data, validation_data, optimizer, device, opt):
-    ''' Start training '''
-
-    log_train_file = None
-    log_valid_file = None
-
-    if opt.log:
-        log_train_file = opt.log + '.train.log'
-        log_valid_file = opt.log + '.valid.log'
-
-        print('[Info] Training performance will be written to file: {} and {}'.format(
-            log_train_file, log_valid_file))
-
-        with open(log_train_file, 'w') as log_tf, open(log_valid_file, 'w') as log_vf:
-            log_tf.write('epoch,loss,ppl,accuracy\n')
-            log_vf.write('epoch,loss,ppl,accuracy\n')
-
-    valid_accus = []
-    for epoch_i in range(opt.epoch):
-        print('[ Epoch', epoch_i, ']')
-
-        start = time.time()
-        train_loss, train_accu = train_epoch(
-            model, training_data, optimizer, device, smoothing=opt.label_smoothing)
-        print('  - (Training)   ppl: {ppl: 8.5f}, accuracy: {accu:3.3f} %, ' \
-              'elapse: {elapse:3.3f} min'.format(
-            ppl=math.exp(min(train_loss, 100)), accu=100 * train_accu,
-            elapse=(time.time() - start) / 60))
-
-        start = time.time()
-        valid_loss, valid_accu = eval_epoch(model, validation_data, device)
-        print('  - (Validation) ppl: {ppl: 8.5f}, accuracy: {accu:3.3f} %, ' \
-              'elapse: {elapse:3.3f} min'.format(
-            ppl=math.exp(min(valid_loss, 100)), accu=100 * valid_accu,
-            elapse=(time.time() - start) / 60))
-
-        valid_accus += [valid_accu]
-
-        model_state_dict = model.state_dict()
-        checkpoint = {
-            'model': model_state_dict,
-            'settings': opt,
-            'epoch': epoch_i}
-
-        if opt.save_model:
-            if opt.save_mode == 'all':
-                model_name = opt.save_model + '_accu_{accu:3.3f}.chkpt'.format(accu=100 * valid_accu)
-                torch.save(checkpoint, model_name)
-            elif opt.save_mode == 'best':
-                model_name = opt.save_model + '.chkpt'
-                if valid_accu >= max(valid_accus):
-                    torch.save(checkpoint, model_name)
-                    print('    - [Info] The checkpoint file has been updated.')
-
-        if log_train_file and log_valid_file:
-            with open(log_train_file, 'a') as log_tf, open(log_valid_file, 'a') as log_vf:
-                log_tf.write('{epoch},{loss: 8.5f},{ppl: 8.5f},{accu:3.3f}\n'.format(
-                    epoch=epoch_i, loss=train_loss,
-                    ppl=math.exp(min(train_loss, 100)), accu=100 * train_accu))
-                log_vf.write('{epoch},{loss: 8.5f},{ppl: 8.5f},{accu:3.3f}\n'.format(
-                    epoch=epoch_i, loss=valid_loss,
-                    ppl=math.exp(min(valid_loss, 100)), accu=100 * valid_accu))
+    return losses.avg
 
 
 def main():
-    ''' Main function '''
-    parser = argparse.ArgumentParser()
-
-    parser.add_argument('-data', required=True)
-
-    parser.add_argument('-epoch', type=int, default=10)
-    parser.add_argument('-batch_size', type=int, default=64)
-
-    # parser.add_argument('-d_word_vec', type=int, default=512)
-    parser.add_argument('-d_model', type=int, default=512)
-    parser.add_argument('-d_inner_hid', type=int, default=2048)
-    parser.add_argument('-d_k', type=int, default=64)
-    parser.add_argument('-d_v', type=int, default=64)
-
-    parser.add_argument('-n_head', type=int, default=8)
-    parser.add_argument('-n_layers', type=int, default=6)
-    parser.add_argument('-n_warmup_steps', type=int, default=4000)
-
-    parser.add_argument('-dropout', type=float, default=0.1)
-    parser.add_argument('-embs_share_weight', action='store_true')
-    parser.add_argument('-proj_share_weight', action='store_true')
-
-    parser.add_argument('-log', default=None)
-    parser.add_argument('-save_model', default=None)
-    parser.add_argument('-save_mode', type=str, choices=['all', 'best'], default='best')
-
-    parser.add_argument('-no_cuda', action='store_true')
-    parser.add_argument('-label_smoothing', action='store_true')
-
-    opt = parser.parse_args()
-    opt.cuda = not opt.no_cuda
-    opt.d_word_vec = opt.d_model
-
-    # ========= Loading Dataset =========#
-    data = torch.load(opt.data)
-    opt.max_token_seq_len = data['settings'].max_token_seq_len
-
-    training_data, validation_data = prepare_dataloaders(data, opt)
-
-    opt.src_vocab_size = training_data.dataset.src_vocab_size
-    opt.tgt_vocab_size = training_data.dataset.tgt_vocab_size
-
-    # ========= Preparing Model =========#
-    if opt.embs_share_weight:
-        assert training_data.dataset.src_word2idx == training_data.dataset.tgt_word2idx, \
-            'The src/tgt word2idx table are different but asked to share word embedding.'
-
-    print(opt)
-
-    device = torch.device('cuda' if opt.cuda else 'cpu')
-    transformer = Transformer(
-        opt.src_vocab_size,
-        opt.tgt_vocab_size,
-        opt.max_token_seq_len,
-        tgt_emb_prj_weight_sharing=opt.proj_share_weight,
-        emb_src_tgt_weight_sharing=opt.embs_share_weight,
-        d_k=opt.d_k,
-        d_v=opt.d_v,
-        d_model=opt.d_model,
-        d_word_vec=opt.d_word_vec,
-        d_inner=opt.d_inner_hid,
-        n_layers=opt.n_layers,
-        n_head=opt.n_head,
-        dropout=opt.dropout).to(device)
-
-    optimizer = ScheduledOptim(
-        optim.Adam(
-            filter(lambda x: x.requires_grad, transformer.parameters()),
-            betas=(0.9, 0.98), eps=1e-09),
-        opt.d_model, opt.n_warmup_steps)
-
-    train(transformer, training_data, validation_data, optimizer, device, opt)
-
-
-def prepare_dataloaders(data, opt):
-    # ========= Preparing DataLoader =========#
-    train_loader = torch.utils.data.DataLoader(
-        TranslationDataset(
-            src_word2idx=data['dict']['src'],
-            tgt_word2idx=data['dict']['tgt'],
-            src_insts=data['train']['src'],
-            tgt_insts=data['train']['tgt']),
-        num_workers=2,
-        batch_size=opt.batch_size,
-        collate_fn=paired_collate_fn,
-        shuffle=True)
-
-    valid_loader = torch.utils.data.DataLoader(
-        TranslationDataset(
-            src_word2idx=data['dict']['src'],
-            tgt_word2idx=data['dict']['tgt'],
-            src_insts=data['valid']['src'],
-            tgt_insts=data['valid']['tgt']),
-        num_workers=2,
-        batch_size=opt.batch_size,
-        collate_fn=paired_collate_fn)
-    return train_loader, valid_loader
+    global args
+    args = parse_args()
+    train_net(args)
 
 
 if __name__ == '__main__':

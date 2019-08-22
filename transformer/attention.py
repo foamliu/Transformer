@@ -1,11 +1,6 @@
-''' Define the sublayers in encoder/decoder layer '''
 import numpy as np
+import torch
 import torch.nn as nn
-import torch.nn.functional as F
-
-from transformer.Modules import ScaledDotProductAttention
-
-__author__ = "Yu-Hsiang Huang"
 
 
 class MultiHeadAttention(nn.Module):
@@ -25,7 +20,8 @@ class MultiHeadAttention(nn.Module):
         nn.init.normal_(self.w_ks.weight, mean=0, std=np.sqrt(2.0 / (d_model + d_k)))
         nn.init.normal_(self.w_vs.weight, mean=0, std=np.sqrt(2.0 / (d_model + d_v)))
 
-        self.attention = ScaledDotProductAttention(temperature=np.power(d_k, 0.5))
+        self.attention = ScaledDotProductAttention(temperature=np.power(d_k, 0.5),
+                                                   attn_dropout=dropout)
         self.layer_norm = nn.LayerNorm(d_model)
 
         self.fc = nn.Linear(n_head * d_v, d_model)
@@ -50,7 +46,9 @@ class MultiHeadAttention(nn.Module):
         k = k.permute(2, 0, 1, 3).contiguous().view(-1, len_k, d_k)  # (n*b) x lk x dk
         v = v.permute(2, 0, 1, 3).contiguous().view(-1, len_v, d_v)  # (n*b) x lv x dv
 
-        mask = mask.repeat(n_head, 1, 1)  # (n*b) x .. x ..
+        if mask is not None:
+            mask = mask.repeat(n_head, 1, 1)  # (n*b) x .. x ..
+
         output, attn = self.attention(q, k, v, mask=mask)
 
         output = output.view(n_head, sz_b, len_q, d_v)
@@ -62,21 +60,24 @@ class MultiHeadAttention(nn.Module):
         return output, attn
 
 
-class PositionwiseFeedForward(nn.Module):
-    ''' A two-feed-forward-layer module '''
+class ScaledDotProductAttention(nn.Module):
+    ''' Scaled Dot-Product Attention '''
 
-    def __init__(self, d_in, d_hid, dropout=0.1):
+    def __init__(self, temperature, attn_dropout=0.1):
         super().__init__()
-        self.w_1 = nn.Conv1d(d_in, d_hid, 1)  # position-wise
-        self.w_2 = nn.Conv1d(d_hid, d_in, 1)  # position-wise
-        self.layer_norm = nn.LayerNorm(d_in)
-        self.dropout = nn.Dropout(dropout)
+        self.temperature = temperature
+        self.dropout = nn.Dropout(attn_dropout)
+        self.softmax = nn.Softmax(dim=2)
 
-    def forward(self, x):
-        residual = x
-        output = x.transpose(1, 2)
-        output = self.w_2(F.relu(self.w_1(output)))
-        output = output.transpose(1, 2)
-        output = self.dropout(output)
-        output = self.layer_norm(output + residual)
-        return output
+    def forward(self, q, k, v, mask=None):
+        attn = torch.bmm(q, k.transpose(1, 2))
+        attn = attn / self.temperature
+
+        if mask is not None:
+            attn = attn.masked_fill(mask, -np.inf)
+
+        attn = self.softmax(attn)
+        attn = self.dropout(attn)
+        output = torch.bmm(attn, v)
+
+        return output, attn
