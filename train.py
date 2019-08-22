@@ -4,7 +4,7 @@ from tensorboardX import SummaryWriter
 # from torch import nn
 from tqdm import tqdm
 
-from config import device, print_freq, sos_id, eos_id, vocab_size
+from config import device, print_freq, sos_id, eos_id, n_src_vocab, n_tgt_vocab
 from data_gen import AiChallenger2017Dataset, pad_collate
 from transformer.decoder import Decoder
 from transformer.encoder import Encoder
@@ -26,10 +26,10 @@ def train_net(args):
     # Initialize / load checkpoint
     if checkpoint is None:
         # model
-        encoder = Encoder(args.d_input * args.LFR_m, args.n_layers_enc, args.n_head,
+        encoder = Encoder(n_src_vocab, args.n_layers_enc, args.n_head,
                           args.d_k, args.d_v, args.d_model, args.d_inner,
                           dropout=args.dropout, pe_maxlen=args.pe_maxlen)
-        decoder = Decoder(sos_id, eos_id, vocab_size,
+        decoder = Decoder(sos_id, eos_id, n_tgt_vocab,
                           args.d_word_vec, args.n_layers_dec, args.n_head,
                           args.d_k, args.d_v, args.d_model, args.d_inner,
                           dropout=args.dropout,

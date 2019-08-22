@@ -9,11 +9,11 @@ class Encoder(nn.Module):
     """Encoder of Transformer including self-attention and feed forward.
     """
 
-    def __init__(self, d_input, n_layers, n_head, d_k, d_v,
+    def __init__(self, n_src_vocab, n_layers, n_head, d_k, d_v,
                  d_model, d_inner, dropout=0.1, pe_maxlen=5000):
         super(Encoder, self).__init__()
         # parameters
-        self.d_input = d_input
+        self.n_src_vocab = n_src_vocab
         self.n_layers = n_layers
         self.n_head = n_head
         self.d_k = d_k
@@ -23,9 +23,7 @@ class Encoder(nn.Module):
         self.dropout_rate = dropout
         self.pe_maxlen = pe_maxlen
 
-        # use linear transformation with layer norm to replace input embedding
-        self.linear_in = nn.Linear(d_input, d_model)
-        self.layer_norm_in = nn.LayerNorm(d_model)
+        self.input_embedding = nn.Linear(n_src_vocab, d_model)
         self.positional_encoding = PositionalEncoding(d_model, max_len=pe_maxlen)
         self.dropout = nn.Dropout(dropout)
 
@@ -50,7 +48,7 @@ class Encoder(nn.Module):
 
         # Forward
         enc_output = self.dropout(
-            self.layer_norm_in(self.linear_in(padded_input)) +
+            self.input_embedding(padded_input) +
             self.positional_encoding(padded_input))
 
         for enc_layer in self.layer_stack:

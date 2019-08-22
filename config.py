@@ -8,7 +8,8 @@ epochs = 10000
 embedding_size = 300
 hidden_size = 1024
 vocab_file = 'vocab.pkl'
-vocab_size = 8279  # target
+n_src_vocab = 191
+n_tgt_vocab = 8279  # target
 
 # Training parameters
 grad_clip = 5.  # clip gradients at an absolute value of
