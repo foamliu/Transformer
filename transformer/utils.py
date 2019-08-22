@@ -102,7 +102,7 @@ def get_non_pad_mask(padded_input, input_lengths=None, pad_idx=None):
     if input_lengths is not None:
         # padded_input: N x T x ..
         N = padded_input.size(0)
-        non_pad_mask = padded_input.new_ones(padded_input.size())  # N x T
+        non_pad_mask = padded_input.new_ones(padded_input.size()[:-1])  # N x T
         for i in range(N):
             non_pad_mask[i, input_lengths[i]:] = 0
     if pad_idx is not None:

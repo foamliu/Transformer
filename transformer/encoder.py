@@ -24,8 +24,8 @@ class Encoder(nn.Module):
         self.dropout_rate = dropout
         self.pe_maxlen = pe_maxlen
 
-        self.input_embedding = nn.Embedding(n_src_vocab, d_model, padding_idx=pad_id)
-        self.positional_encoding = PositionalEncoding(d_model, max_len=pe_maxlen)
+        self.src_emb = nn.Embedding(n_src_vocab, d_model, padding_idx=pad_id)
+        self.pos_emb = PositionalEncoding(d_model, max_len=pe_maxlen)
         self.dropout = nn.Dropout(dropout)
 
         self.layer_stack = nn.ModuleList([
@@ -42,16 +42,15 @@ class Encoder(nn.Module):
         """
         enc_slf_attn_list = []
 
-        # Prepare masks
-        non_pad_mask = get_non_pad_mask(padded_input, input_lengths=input_lengths)
-        length = padded_input.size(1)
-        slf_attn_mask = get_attn_pad_mask(padded_input, input_lengths, length)
-
         # Forward
-        enc_output = self.dropout(
-            self.input_embedding(padded_input) +
-            self.positional_encoding(padded_input))
-        print('enc_output.size(): ' + str(enc_output.size()))
+        enc_outputs = self.src_emb(padded_input)
+        enc_outputs += self.pos_emb(input_lengths)
+        enc_output = self.dropout(enc_outputs)
+
+        # Prepare masks
+        non_pad_mask = get_non_pad_mask(enc_output, input_lengths=input_lengths)
+        length = padded_input.size(1)
+        slf_attn_mask = get_attn_pad_mask(enc_output, input_lengths, length)
 
         for enc_layer in self.layer_stack:
             enc_output, enc_slf_attn = enc_layer(
