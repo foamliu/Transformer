@@ -22,17 +22,15 @@ def pad_collate(batch):
     max_target_len = float('-inf')
 
     for elem in batch:
-        feature, trn = elem
-        max_input_len = max_input_len if max_input_len > feature.shape[0] else feature.shape[0]
-        max_target_len = max_target_len if max_target_len > len(trn) else len(trn)
+        src, tgt = elem
+        max_input_len = max_input_len if max_input_len > len(src) else len(src)
+        max_target_len = max_target_len if max_target_len > len(tgt) else len(tgt)
 
     for i, elem in enumerate(batch):
-        feature, trn = elem
-        input_length = feature.shape[0]
-        input_dim = feature.shape[1]
-        padded_input = np.zeros((max_input_len, input_dim), dtype=np.float32)
-        padded_input[:input_length, :] = feature
-        padded_target = np.pad(trn, (0, max_target_len - len(trn)), 'constant', constant_values=IGNORE_ID)
+        src, tgt = elem
+        input_length = len(src)
+        padded_input = np.pad(src, (0, max_input_len - len(src)), 'constant', constant_values=0)
+        padded_target = np.pad(tgt, (0, max_target_len - len(tgt)), 'constant', constant_values=IGNORE_ID)
         batch[i] = (padded_input, padded_target, input_length)
 
     # sort it by input lengths (long to short)
