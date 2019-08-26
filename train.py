@@ -1,3 +1,5 @@
+import time
+
 import numpy as np
 import torch
 from tensorboardX import SummaryWriter
@@ -102,6 +104,9 @@ def train(train_loader, model, optimizer, epoch, logger):
     model.train()  # train mode (dropout and batchnorm is used)
 
     losses = AverageMeter()
+    times = AverageMeter()
+
+    start = time.time()
 
     # Batches
     for i, (data) in enumerate(train_loader):
@@ -123,14 +128,17 @@ def train(train_loader, model, optimizer, epoch, logger):
         optimizer.step()
 
         # Keep track of metrics
+        elapsed = time.time() - start
+        start = time.time()
         losses.update(loss.item())
+        times.update(elapsed)
 
         # Print status
         if i % print_freq == 0:
             logger.info('Epoch: [{0}][{1}/{2}]\t'
-                        'Loss {loss.val:.5f} ({loss.avg:.5f})'.format(epoch, i, len(train_loader), loss=losses))
-
-        del loss, pred, gold
+                        'Batch time {time.val:.5f} ({time.avg:.5f})'
+                        'Loss {loss.val:.5f} ({loss.avg:.5f})'.format(epoch, i, len(train_loader), time=times,
+                                                                      loss=losses))
 
     return losses.avg
 
