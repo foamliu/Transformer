@@ -119,7 +119,7 @@ def parse_args():
                         help='Batch size is reduced if the input sequence length > ML')
     parser.add_argument('--maxlen-out', default=80, type=int, metavar='ML',
                         help='Batch size is reduced if the output sequence length > ML')
-    parser.add_argument('--num-workers', default=4, type=int,
+    parser.add_argument('--num-workers', default=8, type=int,
                         help='Number of workers to generate minibatch')
     # optimizer
     parser.add_argument('--k', default=0.2, type=float,
