@@ -7,9 +7,12 @@ d_model = 512
 epochs = 10000
 embedding_size = 300
 hidden_size = 1024
+data_file = 'data.pkl'
 vocab_file = 'vocab.pkl'
 n_src_vocab = 192
 n_tgt_vocab = 8280  # target
+maxlen_in = 100
+maxlen_out = 50
 
 # Training parameters
 grad_clip = 5.  # clip gradients at an absolute value of
