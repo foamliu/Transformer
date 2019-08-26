@@ -92,5 +92,8 @@ if __name__ == '__main__':
         'valid': valid
     }
 
+    print('num_train: ' + str(len(train)))
+    print('num_valid: ' + str(len(valid)))
+
     with open(data_file, 'wb') as file:
         pickle.dump(data, file)
