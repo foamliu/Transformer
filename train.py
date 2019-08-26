@@ -61,7 +61,7 @@ def train_net(args):
     train_dataset = AiChallenger2017Dataset('train')
     train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=args.batch_size, collate_fn=pad_collate,
                                                shuffle=True, num_workers=args.num_workers)
-    valid_dataset = AiChallenger2017Dataset('dev')
+    valid_dataset = AiChallenger2017Dataset('valid')
     valid_loader = torch.utils.data.DataLoader(valid_dataset, batch_size=args.batch_size, collate_fn=pad_collate,
                                                shuffle=False, num_workers=args.num_workers)
 
