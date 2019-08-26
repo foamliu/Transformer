@@ -6,14 +6,14 @@ from tensorboardX import SummaryWriter
 # from torch import nn
 from tqdm import tqdm
 
-from config import device, print_freq, sos_id, eos_id, n_src_vocab, n_tgt_vocab
+from config import device, print_freq, sos_id, eos_id, n_src_vocab, n_tgt_vocab, grad_clip
 from data_gen import AiChallenger2017Dataset, pad_collate
 from transformer.decoder import Decoder
 from transformer.encoder import Encoder
 from transformer.loss import cal_performance
 from transformer.optimizer import TransformerOptimizer
 from transformer.transformer import Transformer
-from utils import parse_args, save_checkpoint, AverageMeter, get_logger
+from utils import parse_args, save_checkpoint, AverageMeter, get_logger, clip_gradient
 
 
 def train_net(args):
@@ -123,6 +123,9 @@ def train(train_loader, model, optimizer, epoch, logger, writer):
         # Back prop.
         optimizer.zero_grad()
         loss.backward()
+
+        # Clip gradients
+        clip_gradient(optimizer.optimizer, grad_clip)
 
         # Update weights
         optimizer.step()
