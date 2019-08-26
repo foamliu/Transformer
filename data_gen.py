@@ -5,6 +5,7 @@ from torch.utils.data import Dataset
 from torch.utils.data.dataloader import default_collate
 
 from config import data_file, vocab_file, IGNORE_ID, pad_id
+from utils import get_logger
 
 
 def get_data(filename):
@@ -38,7 +39,8 @@ def pad_collate(batch):
 
 class AiChallenger2017Dataset(Dataset):
     def __init__(self, split):
-        print('loading {} samples...'.format(split))
+        logger = get_logger()
+        logger.info('loading {} samples...'.format(split))
         with open(data_file, 'rb') as file:
             data = pickle.load(file)
 
