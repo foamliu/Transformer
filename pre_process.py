@@ -1,5 +1,6 @@
 import pickle
 
+import matplotlib.pyplot as plt
 from tqdm import tqdm
 
 from config import train_translation_en_filename, train_translation_zh_filename, valid_translation_en_filename, \
@@ -18,15 +19,21 @@ def process(file, word2idx, idx2char):
     with open(file, 'r', encoding='utf-8') as file:
         data = file.readlines()
 
-    max_length = 0
+    lengths = []
 
     for line in tqdm(data):
         for token in line.strip():
             build_vocab(token, word2idx, idx2char)
 
-        if len(line) > max_length:
-            max_length = len(line)
-    print('max_length: ' + str(max_length))
+        lengths.append(len(line.strip()))
+
+    n, bins, patches = plt.hist(lengths, 50, density=True, facecolor='g', alpha=0.75)
+
+    plt.xlabel('Lengths')
+    plt.ylabel('Probability')
+    plt.title('Histogram of Lengths')
+    plt.grid(True)
+    plt.show()
 
 
 if __name__ == '__main__':
