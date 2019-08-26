@@ -49,7 +49,7 @@ def get_data(in_file, out_file):
         in_data = [src_char2idx[token] for token in in_line]
 
         out_line = out_lines[i].strip()
-        out_data = [src_char2idx[token] for token in out_line]
+        out_data = [tgt_char2idx[token] for token in out_line]
 
         if len(in_data) < maxlen_in and len(out_data) < maxlen_out:
             samples.append({'in': in_data, 'out': out_data})
