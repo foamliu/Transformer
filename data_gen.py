@@ -4,7 +4,7 @@ import numpy as np
 from torch.utils.data import Dataset
 from torch.utils.data.dataloader import default_collate
 
-from config import data_file, vocab_file, IGNORE_ID, eos_id, pad_id
+from config import data_file, vocab_file, IGNORE_ID, pad_id
 
 
 def get_data(filename):
@@ -65,7 +65,7 @@ class AiChallenger2017Dataset(Dataset):
     def __getitem__(self, i):
         sample = self.samples[i]
         src_text = sample['in']
-        tgt_text = sample['out'] + [eos_id]
+        tgt_text = sample['out']
 
         return src_text, tgt_text
 
