@@ -60,10 +60,10 @@ def train_net(args):
     # Custom dataloaders
     train_dataset = AiChallenger2017Dataset('train')
     train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=args.batch_size, collate_fn=pad_collate,
-                                               pin_memory=True, shuffle=True, num_workers=args.num_workers)
+                                               shuffle=True, num_workers=args.num_workers)
     valid_dataset = AiChallenger2017Dataset('dev')
     valid_loader = torch.utils.data.DataLoader(valid_dataset, batch_size=args.batch_size, collate_fn=pad_collate,
-                                               pin_memory=True, shuffle=False, num_workers=args.num_workers)
+                                               shuffle=False, num_workers=args.num_workers)
 
     # Epochs
     for epoch in range(start_epoch, args.epochs):
