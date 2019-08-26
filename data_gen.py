@@ -5,10 +5,8 @@ from torch.utils.data import Dataset
 from torch.utils.data.dataloader import default_collate
 
 from config import data_file, vocab_file, IGNORE_ID, pad_id
-from utils import get_logger
 
-logger = get_logger()
-logger.info('loading samples...')
+print('loading samples...')
 with open(data_file, 'rb') as file:
     data = pickle.load(file)
 
