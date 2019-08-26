@@ -136,7 +136,7 @@ def train(train_loader, model, optimizer, epoch, logger):
         # Print status
         if i % print_freq == 0:
             logger.info('Epoch: [{0}][{1}/{2}]\t'
-                        'Batch time {time.val:.5f} ({time.avg:.5f})'
+                        'Batch time {time.val:.5f} ({time.avg:.5f})\t'
                         'Loss {loss.val:.5f} ({loss.avg:.5f})'.format(epoch, i, len(train_loader), time=times,
                                                                       loss=losses))
 
