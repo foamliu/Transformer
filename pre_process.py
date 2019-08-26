@@ -7,7 +7,7 @@ from config import train_translation_en_filename, train_translation_zh_filename,
 
 
 def build_vocab(token, word2idx, idx2char):
-    if not token in word2idx:
+    if token not in word2idx:
         next_index = len(word2idx)
         word2idx[token] = next_index
         idx2char[next_index] = token
@@ -15,8 +15,8 @@ def build_vocab(token, word2idx, idx2char):
 
 def process(file, word2idx, idx2char):
     print('processing {}...'.format(file))
-    with open(file, 'r', encoding='utf-8') as file:
-        data = file.readlines()
+    with open(file, 'r', encoding='utf-8') as f:
+        data = f.readlines()
 
     # lengths = []
 
