@@ -72,12 +72,12 @@ def train_net(args):
                            model=model,
                            optimizer=optimizer,
                            epoch=epoch,
-                           logger=logger)
+                           logger=logger,
+                           writer=writer)
         writer.add_scalar('model/train_loss', train_loss, epoch)
 
         lr = optimizer.lr
         print('\nLearning rate: {}'.format(lr))
-        writer.add_scalar('model/learning_rate', lr, epoch)
         step_num = optimizer.step_num
         print('Step num: {}\n'.format(step_num))
 
@@ -100,7 +100,7 @@ def train_net(args):
         save_checkpoint(epoch, epochs_since_improvement, model, optimizer, best_loss, is_best)
 
 
-def train(train_loader, model, optimizer, epoch, logger):
+def train(train_loader, model, optimizer, epoch, logger, writer):
     model.train()  # train mode (dropout and batchnorm is used)
 
     losses = AverageMeter()
@@ -139,6 +139,9 @@ def train(train_loader, model, optimizer, epoch, logger):
                         'Batch time {time.val:.5f} ({time.avg:.5f})\t'
                         'Loss {loss.val:.5f} ({loss.avg:.5f})'.format(epoch, i, len(train_loader), time=times,
                                                                       loss=losses))
+
+            writer.add_scalar('model/train_loss', loss.item(), optimizer.step_num)
+            writer.add_scalar('model/learning_rate', optimizer.lr, optimizer.step_num)
 
     return losses.avg
 
