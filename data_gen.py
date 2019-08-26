@@ -7,6 +7,11 @@ from torch.utils.data.dataloader import default_collate
 from config import data_file, vocab_file, IGNORE_ID, pad_id
 from utils import get_logger
 
+logger = get_logger()
+logger.info('loading samples...')
+with open(data_file, 'rb') as file:
+    data = pickle.load(file)
+
 
 def get_data(filename):
     with open(filename, 'r') as file:
@@ -39,11 +44,6 @@ def pad_collate(batch):
 
 class AiChallenger2017Dataset(Dataset):
     def __init__(self, split):
-        logger = get_logger()
-        logger.info('loading {} samples...'.format(split))
-        with open(data_file, 'rb') as file:
-            data = pickle.load(file)
-
         self.samples = data[split]
 
         # with open(vocab_file, 'rb') as file:
