@@ -38,6 +38,7 @@ def pad_collate(batch):
 
 class AiChallenger2017Dataset(Dataset):
     def __init__(self, split):
+        print('loading {} samples...'.format(split))
         with open(data_file, 'rb') as file:
             data = pickle.load(file)
 
@@ -59,8 +60,6 @@ class AiChallenger2017Dataset(Dataset):
         #     self.dst = get_data(valid_translation_zh_filename)
 
         # assert(len(self.src) == len(self.dst))
-
-        print('loading {} {} samples...'.format(len(self.samples), split))
 
     def __getitem__(self, i):
         sample = self.samples[i]
