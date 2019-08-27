@@ -120,6 +120,12 @@ def train(train_loader, model, optimizer, epoch, logger, writer):
         # Forward prop.
         pred, gold = model(padded_input, input_lengths, padded_target)
         loss, n_correct = cal_performance(pred, gold, smoothing=args.label_smoothing)
+        try:
+            assert (not math.isnan(loss.item()))
+        except AssertionError:
+            print('n_correct: ' + str(n_correct))
+            print('data: ' + str(n_correct))
+            continue
 
         # Back prop.
         optimizer.zero_grad()
@@ -134,7 +140,8 @@ def train(train_loader, model, optimizer, epoch, logger, writer):
         # Keep track of metrics
         elapsed = time.time() - start
         start = time.time()
-        assert (not math.isnan(loss.item()))
+
+
         losses.update(loss.item())
         times.update(elapsed)
 
