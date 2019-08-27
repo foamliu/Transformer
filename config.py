@@ -15,7 +15,7 @@ maxlen_in = 100
 maxlen_out = 50
 
 # Training parameters
-grad_clip = 5.  # clip gradients at an absolute value of
+grad_clip = 1.0  # clip gradients at an absolute value of
 print_freq = 100  # print training/validation stats  every __ batches
 checkpoint = None  # path to checkpoint, None if none
 
