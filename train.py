@@ -74,12 +74,12 @@ def train_net(args):
                            epoch=epoch,
                            logger=logger,
                            writer=writer)
-        writer.add_scalar('model/train_loss', train_loss, epoch)
 
-        lr = optimizer.lr
-        print('\nLearning rate: {}'.format(lr))
-        step_num = optimizer.step_num
-        print('Step num: {}\n'.format(step_num))
+        writer.add_scalar('model/train_loss', train_loss, epoch)
+        writer.add_scalar('model/learning_rate', optimizer.lr, epoch)
+
+        print('\nLearning rate: {}'.format(optimizer.lr))
+        print('Step num: {}\n'.format(optimizer.step_num))
 
         # One epoch's validation
         valid_loss = valid(valid_loader=valid_loader,
@@ -140,11 +140,9 @@ def train(train_loader, model, optimizer, epoch, logger, writer):
         if i % print_freq == 0:
             logger.info('Epoch: [{0}][{1}/{2}]\t'
                         'Batch time {time.val:.5f} ({time.avg:.5f})\t'
+                        'Learning rate {lr:.6f}\t'
                         'Loss {loss.val:.5f} ({loss.avg:.5f})'.format(epoch, i, len(train_loader), time=times,
-                                                                      loss=losses))
-
-            writer.add_scalar('model/train_loss', loss.item(), optimizer.step_num)
-            writer.add_scalar('model/learning_rate', optimizer.lr, optimizer.step_num)
+                                                                      lr=optimizer.lr, loss=losses))
 
     return losses.avg
 
