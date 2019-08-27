@@ -1,3 +1,4 @@
+import math
 import time
 
 import numpy as np
@@ -133,6 +134,7 @@ def train(train_loader, model, optimizer, epoch, logger, writer):
         # Keep track of metrics
         elapsed = time.time() - start
         start = time.time()
+        assert (not math.isnan(loss.item()))
         losses.update(loss.item())
         times.update(elapsed)
 
