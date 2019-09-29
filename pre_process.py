@@ -2,13 +2,12 @@ import pickle
 from collections import Counter
 
 import jieba
-import matplotlib.pyplot as plt
 import nltk
 from tqdm import tqdm
 
 from config import train_translation_en_filename, train_translation_zh_filename, valid_translation_en_filename, \
     valid_translation_zh_filename, vocab_file, maxlen_in, maxlen_out, data_file, sos_id, eos_id, n_src_vocab, \
-    n_tgt_vocab
+    n_tgt_vocab, unk_id
 from utils import normalizeString, encode_text
 
 
@@ -31,7 +30,7 @@ def process(file, lang='zh'):
         sentence = line.strip()
         if lang == 'en':
             sentence_en = sentence.lower()
-            tokens = [normalizeString(s.strip()) for s in nltk.word_tokenize(sentence_en)]
+            tokens = [normalizeString(s) for s in nltk.word_tokenize(sentence_en)]
             word_freq.update(list(tokens))
             vocab_size = n_src_vocab
         else:
@@ -49,15 +48,15 @@ def process(file, lang='zh'):
     word_map['<eos>'] = 2
     word_map['<unk>'] = 3
     print(len(word_map))
-    print(words[:10])
-
-    n, bins, patches = plt.hist(lengths, 50, density=True, facecolor='g', alpha=0.75)
-
-    plt.xlabel('Lengths')
-    plt.ylabel('Probability')
-    plt.title('Histogram of Lengths')
-    plt.grid(True)
-    plt.show()
+    print(words[:100])
+    #
+    # n, bins, patches = plt.hist(lengths, 50, density=True, facecolor='g', alpha=0.75)
+    #
+    # plt.xlabel('Lengths')
+    # plt.ylabel('Probability')
+    # plt.title('Histogram of Lengths')
+    # plt.grid(True)
+    # plt.show()
 
     word2idx = word_map
     idx2char = {v: k for k, v in word2idx.items()}
@@ -83,7 +82,7 @@ def get_data(in_file, out_file):
         tokens = jieba.cut(sentence_zh.strip())
         out_data = [sos_id] + encode_text(tgt_char2idx, tokens) + [eos_id]
 
-        if len(in_data) < maxlen_in and len(out_data) < maxlen_out:
+        if len(in_data) < maxlen_in and len(out_data) < maxlen_out and unk_id not in in_data and unk_id not in out_data:
             samples.append({'in': in_data, 'out': out_data})
     return samples
 
