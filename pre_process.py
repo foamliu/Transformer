@@ -35,7 +35,8 @@ def process(file, lang='zh'):
             word_freq.update(list(tokens))
             vocab_size = vocab_size_in
         else:
-            tokens = jieba.cut(sentence.strip())
+            seg_list = jieba.cut(sentence.strip())
+            tokens = list(seg_list)
             word_freq.update(list(tokens))
             vocab_size = vocab_size_out
 
