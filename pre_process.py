@@ -1,4 +1,5 @@
 import pickle
+from collections import Counter
 
 import jieba
 import matplotlib.pyplot as plt
@@ -6,7 +7,8 @@ import nltk
 from tqdm import tqdm
 
 from config import train_translation_en_filename, train_translation_zh_filename, valid_translation_en_filename, \
-    valid_translation_zh_filename, vocab_file, maxlen_in, maxlen_out, data_file, sos_id, eos_id
+    valid_translation_zh_filename, vocab_file, maxlen_in, maxlen_out, data_file, sos_id, eos_id, vocab_size_in, \
+    vocab_size_out
 from utils import normalizeString
 
 
@@ -17,11 +19,12 @@ def build_vocab(token, word2idx, idx2char):
         idx2char[next_index] = token
 
 
-def process(file, word2idx, idx2char, lang='zh'):
+def process(file, lang='zh'):
     print('processing {}...'.format(file))
     with open(file, 'r', encoding='utf-8') as f:
         data = f.readlines()
 
+    word_freq = Counter()
     lengths = []
 
     for line in tqdm(data):
@@ -29,17 +32,29 @@ def process(file, word2idx, idx2char, lang='zh'):
         if lang == 'en':
             sentence_en = sentence.lower()
             tokens = [normalizeString(s) for s in nltk.word_tokenize(sentence_en)]
-            for token in tokens:
-                build_vocab(token, word2idx, idx2char)
+            word_freq.update(list(tokens))
         elif lang == 'zh':
             tokens = jieba.cut(sentence.strip())
+            word_freq.update(list(tokens))
         else:
             tokens = jieba.cut(sentence.strip())
+            word_freq.update(list(tokens))
 
-        for token in tokens:
-            build_vocab(token, word2idx, idx2char)
+        lengths.append(len(tokens))
 
-        lengths.append(len(line.strip()))
+    if lang == 'en':
+        vocab_size = vocab_size_in
+    else:
+        vocab_size = vocab_size_out
+
+    words = word_freq.most_common(vocab_size - 4)
+    word_map = {k[0]: v + 4 for v, k in enumerate(words)}
+    word_map['<pad>'] = 0
+    word_map['<sos>'] = 1
+    word_map['<eos>'] = 2
+    word_map['<unk>'] = 3
+    print(len(word_map))
+    print(words[:10])
 
     n, bins, patches = plt.hist(lengths, 50, density=True, facecolor='g', alpha=0.75)
 
@@ -48,6 +63,11 @@ def process(file, word2idx, idx2char, lang='zh'):
     plt.title('Histogram of Lengths')
     plt.grid(True)
     plt.show()
+
+    word2idx = word_map
+    idx2char = {v: k for k, v in word2idx.items()}
+
+    return word2idx, idx2char
 
 
 def get_data(in_file, out_file):
@@ -74,15 +94,15 @@ def get_data(in_file, out_file):
 
 
 if __name__ == '__main__':
-    src_char2idx = {'<pad>': 0, '<sos>': 1, '<eos>': 2}
-    src_idx2char = {0: '<pad>', 1: '<sos>', 2: '<eos>'}
-    tgt_char2idx = {'<pad>': 0, '<sos>': 1, '<eos>': 2}
-    tgt_idx2char = {0: '<pad>', 1: '<sos>', 2: '<eos>'}
+    # src_char2idx = {'<pad>': 0, '<sos>': 1, '<eos>': 2, '<unk>': 3}
+    # src_idx2char = {0: '<pad>', 1: '<sos>', 2: '<eos>', 3: '<unk>'}
+    # tgt_char2idx = {'<pad>': 0, '<sos>': 1, '<eos>': 2, '<unk>': 3}
+    # tgt_idx2char = {0: '<pad>', 1: '<sos>', 2: '<eos>', 3: '<unk>'}
 
-    process(train_translation_en_filename, src_char2idx, src_idx2char, lang='en')
-    process(train_translation_zh_filename, tgt_char2idx, tgt_idx2char, lang='zh')
-    process(valid_translation_en_filename, src_char2idx, src_idx2char, lang='en')
-    process(valid_translation_zh_filename, tgt_char2idx, tgt_idx2char, lang='zh')
+    src_char2idx, src_idx2char = process(train_translation_en_filename, lang='en')
+    tgt_char2idx, tgt_idx2char = process(train_translation_zh_filename, lang='zh')
+    # process(valid_translation_en_filename, src_char2idx, src_idx2char, lang='en')
+    # process(valid_translation_zh_filename, tgt_char2idx, tgt_idx2char, lang='zh')
 
     print(len(src_char2idx))
     print(len(tgt_char2idx))
