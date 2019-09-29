@@ -31,7 +31,7 @@ def process(file, lang='zh'):
         sentence = line.strip()
         if lang == 'en':
             sentence_en = sentence.lower()
-            tokens = [normalizeString(s) for s in nltk.word_tokenize(sentence_en)]
+            tokens = [normalizeString(s.strip()) for s in nltk.word_tokenize(sentence_en)]
             word_freq.update(list(tokens))
             vocab_size = vocab_size_in
         else:
