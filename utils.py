@@ -1,5 +1,7 @@
 import argparse
 import logging
+import re
+import unicodedata
 
 import torch
 
@@ -166,3 +168,19 @@ def text_to_sequence(text, char2idx):
 def sequence_to_text(seq, idx2char):
     result = [idx2char[idx] for idx in seq]
     return result
+
+
+# Turn a Unicode string to plain ASCII, thanks to
+# http://stackoverflow.com/a/518232/2809427
+def unicodeToAscii(s):
+    return ''.join(
+        c for c in unicodedata.normalize('NFD', s)
+        if unicodedata.category(c) != 'Mn'
+    )
+
+
+def normalizeString(s):
+    s = unicodeToAscii(s.lower().strip())
+    s = re.sub(r"([.!?])", r" \1", s)
+    s = re.sub(r"[^a-zA-Z.!?]+", r" ", s)
+    return s

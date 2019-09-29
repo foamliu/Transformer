@@ -1,9 +1,13 @@
 import pickle
 
+import jieba
+import matplotlib.pyplot as plt
+import nltk
 from tqdm import tqdm
 
 from config import train_translation_en_filename, train_translation_zh_filename, valid_translation_en_filename, \
     valid_translation_zh_filename, vocab_file, maxlen_in, maxlen_out, data_file, sos_id, eos_id
+from utils import normalizeString
 
 
 def build_vocab(token, word2idx, idx2char):
@@ -13,26 +17,37 @@ def build_vocab(token, word2idx, idx2char):
         idx2char[next_index] = token
 
 
-def process(file, word2idx, idx2char):
+def process(file, word2idx, idx2char, lang='zh'):
     print('processing {}...'.format(file))
     with open(file, 'r', encoding='utf-8') as f:
         data = f.readlines()
 
-    # lengths = []
+    lengths = []
 
     for line in tqdm(data):
-        for token in line.strip():
+        sentence = line.strip()
+        if lang == 'en':
+            sentence_en = sentence.lower()
+            tokens = [normalizeString(s) for s in nltk.word_tokenize(sentence_en)]
+            for token in tokens:
+                build_vocab(token, word2idx, idx2char)
+        elif lang == 'zh':
+            tokens = jieba.cut(sentence.strip())
+        else:
+            tokens = jieba.cut(sentence.strip())
+
+        for token in tokens:
             build_vocab(token, word2idx, idx2char)
 
-    #     lengths.append(len(line.strip()))
-    #
-    # n, bins, patches = plt.hist(lengths, 50, density=True, facecolor='g', alpha=0.75)
-    #
-    # plt.xlabel('Lengths')
-    # plt.ylabel('Probability')
-    # plt.title('Histogram of Lengths')
-    # plt.grid(True)
-    # plt.show()
+        lengths.append(len(line.strip()))
+
+    n, bins, patches = plt.hist(lengths, 50, density=True, facecolor='g', alpha=0.75)
+
+    plt.xlabel('Lengths')
+    plt.ylabel('Probability')
+    plt.title('Histogram of Lengths')
+    plt.grid(True)
+    plt.show()
 
 
 def get_data(in_file, out_file):
@@ -62,10 +77,10 @@ if __name__ == '__main__':
     tgt_char2idx = {'<pad>': 0, '<sos>': 1, '<eos>': 2}
     tgt_idx2char = {0: '<pad>', 1: '<sos>', 2: '<eos>'}
 
-    process(train_translation_en_filename, src_char2idx, src_idx2char)
-    process(train_translation_zh_filename, tgt_char2idx, tgt_idx2char)
-    process(valid_translation_en_filename, src_char2idx, src_idx2char)
-    process(valid_translation_zh_filename, tgt_char2idx, tgt_idx2char)
+    process(train_translation_en_filename, src_char2idx, src_idx2char, lang='en')
+    process(train_translation_zh_filename, tgt_char2idx, tgt_idx2char, lang='zh')
+    process(valid_translation_en_filename, src_char2idx, src_idx2char, lang='en')
+    process(valid_translation_zh_filename, tgt_char2idx, tgt_idx2char, lang='zh')
 
     print(len(src_char2idx))
     print(len(tgt_char2idx))
