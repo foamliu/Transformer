@@ -184,3 +184,7 @@ def normalizeString(s):
     s = re.sub(r"([.!?])", r" \1", s)
     s = re.sub(r"[^a-zA-Z.!?]+", r" ", s)
     return s
+
+
+def encode_text(word_map, c):
+    return [word_map.get(word, word_map['<unk>']) for word in c]

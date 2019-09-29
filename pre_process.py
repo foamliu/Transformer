@@ -9,7 +9,7 @@ from tqdm import tqdm
 from config import train_translation_en_filename, train_translation_zh_filename, valid_translation_en_filename, \
     valid_translation_zh_filename, vocab_file, maxlen_in, maxlen_out, data_file, sos_id, eos_id, vocab_size_in, \
     vocab_size_out
-from utils import normalizeString
+from utils import normalizeString, encode_text
 
 
 def build_vocab(token, word2idx, idx2char):
@@ -76,12 +76,12 @@ def get_data(in_file, out_file):
 
     for i in tqdm(range(len(in_lines))):
         sentence_en = in_lines[i].strip().lower()
-        tokens = [normalizeString(s) for s in nltk.word_tokenize(sentence_en)]
-        in_data = [src_char2idx[token] for token in tokens]
+        tokens = [normalizeString(s.strip()) for s in nltk.word_tokenize(sentence_en)]
+        in_data = encode_text(src_char2idx, tokens)
 
         sentence_zh = out_lines[i].strip()
         tokens = jieba.cut(sentence_zh.strip())
-        out_data = [sos_id] + [tgt_char2idx[token] for token in tokens] + [eos_id]
+        out_data = [sos_id] + encode_text(tgt_char2idx, tokens) + [eos_id]
 
         if len(in_data) < maxlen_in and len(out_data) < maxlen_out:
             samples.append({'in': in_data, 'out': out_data})
@@ -89,21 +89,11 @@ def get_data(in_file, out_file):
 
 
 if __name__ == '__main__':
-    # src_char2idx = {'<pad>': 0, '<sos>': 1, '<eos>': 2, '<unk>': 3}
-    # src_idx2char = {0: '<pad>', 1: '<sos>', 2: '<eos>', 3: '<unk>'}
-    # tgt_char2idx = {'<pad>': 0, '<sos>': 1, '<eos>': 2, '<unk>': 3}
-    # tgt_idx2char = {0: '<pad>', 1: '<sos>', 2: '<eos>', 3: '<unk>'}
-
     src_char2idx, src_idx2char = process(train_translation_en_filename, lang='en')
     tgt_char2idx, tgt_idx2char = process(train_translation_zh_filename, lang='zh')
-    # process(valid_translation_en_filename, src_char2idx, src_idx2char, lang='en')
-    # process(valid_translation_zh_filename, tgt_char2idx, tgt_idx2char, lang='zh')
 
     print(len(src_char2idx))
     print(len(tgt_char2idx))
-
-    # print(src_char2idx)
-    # print(tgt_char2idx)
 
     data = {
         'dict': {

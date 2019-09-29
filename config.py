@@ -11,8 +11,8 @@ data_file = 'data.pkl'
 vocab_file = 'vocab.pkl'
 n_src_vocab = 192
 n_tgt_vocab = 8280  # target
-maxlen_in = 100
-maxlen_out = 50
+maxlen_in = 50
+maxlen_out = 25
 vocab_size_in = 5000
 vocab_size_out = 5000
 # Training parameters
@@ -25,6 +25,7 @@ IGNORE_ID = -1
 pad_id = 0
 sos_id = 1
 eos_id = 2
+unk_id = 3
 num_train = 9008709
 num_valid = 7878
 
