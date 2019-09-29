@@ -60,11 +60,13 @@ def get_data(in_file, out_file):
     samples = []
 
     for i in tqdm(range(len(in_lines))):
-        in_line = in_lines[i].strip()
-        in_data = [src_char2idx[token] for token in in_line]
+        sentence_en = in_lines[i].strip().lower()
+        tokens = [normalizeString(s) for s in nltk.word_tokenize(sentence_en)]
+        in_data = [src_char2idx[token] for token in tokens]
 
-        out_line = out_lines[i].strip()
-        out_data = [sos_id] + [tgt_char2idx[token] for token in out_line] + [eos_id]
+        sentence_zh = out_lines[i].strip()
+        tokens = jieba.cut(sentence_zh.strip())
+        out_data = [sos_id] + [tgt_char2idx[token] for token in tokens] + [eos_id]
 
         if len(in_data) < maxlen_in and len(out_data) < maxlen_out:
             samples.append({'in': in_data, 'out': out_data})
