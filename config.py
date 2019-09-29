@@ -26,8 +26,8 @@ pad_id = 0
 sos_id = 1
 eos_id = 2
 unk_id = 3
-num_train = 9008709
-num_valid = 7878
+num_train = 9309863
+num_valid = 7913
 
 train_translation_en_filename = 'data/ai_challenger_translation_train_20170904/translation_train_data_20170904/train.en'
 train_translation_zh_filename = 'data/ai_challenger_translation_train_20170904/translation_train_data_20170904/train.zh'
