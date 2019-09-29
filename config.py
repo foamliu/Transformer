@@ -13,8 +13,6 @@ n_src_vocab = 5000
 n_tgt_vocab = 5000  # target
 maxlen_in = 50
 maxlen_out = 25
-vocab_size_in = 5000
-vocab_size_out = 5000
 # Training parameters
 grad_clip = 1.0  # clip gradients at an absolute value of
 print_freq = 100  # print training/validation stats  every __ batches

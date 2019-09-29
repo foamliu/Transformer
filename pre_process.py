@@ -7,8 +7,8 @@ import nltk
 from tqdm import tqdm
 
 from config import train_translation_en_filename, train_translation_zh_filename, valid_translation_en_filename, \
-    valid_translation_zh_filename, vocab_file, maxlen_in, maxlen_out, data_file, sos_id, eos_id, vocab_size_in, \
-    vocab_size_out
+    valid_translation_zh_filename, vocab_file, maxlen_in, maxlen_out, data_file, sos_id, eos_id, n_src_vocab, \
+    n_tgt_vocab
 from utils import normalizeString, encode_text
 
 
@@ -33,12 +33,12 @@ def process(file, lang='zh'):
             sentence_en = sentence.lower()
             tokens = [normalizeString(s.strip()) for s in nltk.word_tokenize(sentence_en)]
             word_freq.update(list(tokens))
-            vocab_size = vocab_size_in
+            vocab_size = n_src_vocab
         else:
             seg_list = jieba.cut(sentence.strip())
             tokens = list(seg_list)
             word_freq.update(list(tokens))
-            vocab_size = vocab_size_out
+            vocab_size = n_tgt_vocab
 
         lengths.append(len(tokens))
 
