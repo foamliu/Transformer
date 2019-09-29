@@ -33,19 +33,13 @@ def process(file, lang='zh'):
             sentence_en = sentence.lower()
             tokens = [normalizeString(s) for s in nltk.word_tokenize(sentence_en)]
             word_freq.update(list(tokens))
-        elif lang == 'zh':
-            tokens = jieba.cut(sentence.strip())
-            word_freq.update(list(tokens))
+            vocab_size = vocab_size_in
         else:
             tokens = jieba.cut(sentence.strip())
             word_freq.update(list(tokens))
+            vocab_size = vocab_size_out
 
         lengths.append(len(tokens))
-
-    if lang == 'en':
-        vocab_size = vocab_size_in
-    else:
-        vocab_size = vocab_size_out
 
     words = word_freq.most_common(vocab_size - 4)
     word_map = {k[0]: v + 4 for v, k in enumerate(words)}
