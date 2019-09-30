@@ -39,7 +39,7 @@ def train_net(args):
                           tgt_emb_prj_weight_sharing=args.tgt_emb_prj_weight_sharing,
                           pe_maxlen=args.pe_maxlen)
         model = Transformer(encoder, decoder)
-        print(model)
+        # print(model)
         # model = nn.DataParallel(model)
 
         # optimizer
