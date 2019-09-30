@@ -97,7 +97,7 @@ def parse_args():
     parser.add_argument('--pe_maxlen', default=5000, type=int,
                         help='Positional Encoding max len')
     # decoder
-    parser.add_argument('--d_word_vec', default=512, type=int,
+    parser.add_argument('--d_word_vec', default=384, type=int,
                         help='Dim of decoder embedding')
     parser.add_argument('--n_layers_dec', default=6, type=int,
                         help='Number of decoder stacks')
