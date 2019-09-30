@@ -171,7 +171,7 @@ def valid(valid_loader, model, logger):
         with torch.no_grad():
             # Forward prop.
             pred, gold = model(padded_input, input_lengths, padded_target)
-            loss, n_correct = cal_performance(pred, gold)
+            loss, n_correct = cal_performance(pred, gold, smoothing=args.label_smoothing)
             try:
                 assert (not math.isnan(loss.item()))
             except AssertionError:
