@@ -4,8 +4,6 @@ import time
 import numpy as np
 import torch
 from tensorboardX import SummaryWriter
-# from torch import nn
-from tqdm import tqdm
 
 from config import device, print_freq, sos_id, eos_id, n_src_vocab, n_tgt_vocab, grad_clip, logger
 from data_gen import AiChallenger2017Dataset, pad_collate
@@ -15,6 +13,9 @@ from transformer.loss import cal_performance
 from transformer.optimizer import TransformerOptimizer
 from transformer.transformer import Transformer
 from utils import parse_args, save_checkpoint, AverageMeter, clip_gradient
+
+
+# from torch import nn
 
 
 def train_net(args):
@@ -160,7 +161,7 @@ def valid(valid_loader, model, logger):
     losses = AverageMeter()
 
     # Batches
-    for data in tqdm(valid_loader):
+    for data in valid_loader:
         # Move to GPU, if available
         padded_input, padded_target, input_lengths = data
         padded_input = padded_input.to(device)
@@ -171,6 +172,12 @@ def valid(valid_loader, model, logger):
             # Forward prop.
             pred, gold = model(padded_input, input_lengths, padded_target)
             loss, n_correct = cal_performance(pred, gold)
+            try:
+                assert (not math.isnan(loss.item()))
+            except AssertionError:
+                print('n_correct: ' + str(n_correct))
+                print('data: ' + str(n_correct))
+                continue
 
         # Keep track of metrics
         losses.update(loss.item())
