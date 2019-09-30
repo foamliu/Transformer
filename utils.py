@@ -97,7 +97,7 @@ def parse_args():
     parser.add_argument('--pe_maxlen', default=5000, type=int,
                         help='Positional Encoding max len')
     # decoder
-    parser.add_argument('--d_word_vec', default=384, type=int,
+    parser.add_argument('--d_word_vec', default=512, type=int,
                         help='Dim of decoder embedding')
     parser.add_argument('--n_layers_dec', default=6, type=int,
                         help='Number of decoder stacks')
@@ -113,7 +113,7 @@ def parse_args():
     # minibatch
     parser.add_argument('--shuffle', default=1, type=int,
                         help='reshuffle the data at every epoch')
-    parser.add_argument('--batch-size', default=512, type=int,
+    parser.add_argument('--batch-size', default=384, type=int,
                         help='Batch size')
     parser.add_argument('--batch_frames', default=0, type=int,
                         help='Batch frames. If this is not 0, batch size will make no sense')
