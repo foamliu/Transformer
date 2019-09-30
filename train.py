@@ -7,14 +7,14 @@ from tensorboardX import SummaryWriter
 # from torch import nn
 from tqdm import tqdm
 
-from config import device, print_freq, sos_id, eos_id, n_src_vocab, n_tgt_vocab, grad_clip
+from config import device, print_freq, sos_id, eos_id, n_src_vocab, n_tgt_vocab, grad_clip, logger
 from data_gen import AiChallenger2017Dataset, pad_collate
 from transformer.decoder import Decoder
 from transformer.encoder import Encoder
 from transformer.loss import cal_performance
 from transformer.optimizer import TransformerOptimizer
 from transformer.transformer import Transformer
-from utils import parse_args, save_checkpoint, AverageMeter, get_logger, clip_gradient
+from utils import parse_args, save_checkpoint, AverageMeter, clip_gradient
 
 
 def train_net(args):
@@ -52,8 +52,6 @@ def train_net(args):
         epochs_since_improvement = checkpoint['epochs_since_improvement']
         model = checkpoint['model']
         optimizer = checkpoint['optimizer']
-
-    logger = get_logger()
 
     # Move to GPU, if available
     model = model.to(device)
