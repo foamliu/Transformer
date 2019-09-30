@@ -141,7 +141,6 @@ def train(train_loader, model, optimizer, epoch, logger, writer):
         elapsed = time.time() - start
         start = time.time()
 
-
         losses.update(loss.item())
         times.update(elapsed)
 
@@ -173,7 +172,7 @@ def valid(valid_loader, model, logger):
         with torch.no_grad():
             # Forward prop.
             pred, gold = model(padded_input, input_lengths, padded_target)
-            loss, n_correct = cal_performance(pred, gold, smoothing=args.label_smoothing)
+            loss, n_correct = cal_performance(pred, gold)
 
         # Keep track of metrics
         losses.update(loss.item())
