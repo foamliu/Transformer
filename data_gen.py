@@ -69,7 +69,7 @@ def main():
 
     src_text, tgt_text = valid_dataset[0]
     src_text = sequence_to_text(src_text, src_idx2char)
-    src_text = ''.join(src_text)
+    src_text = ' '.join(src_text)
     print('src_text: ' + src_text)
 
     tgt_text = sequence_to_text(tgt_text, tgt_idx2char)
