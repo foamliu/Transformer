@@ -5,14 +5,14 @@ import numpy as np
 from torch.utils.data import Dataset
 from torch.utils.data.dataloader import default_collate
 
-from config import data_file, vocab_file, IGNORE_ID, pad_id
+from config import data_file, vocab_file, IGNORE_ID, pad_id, logger
 
-print('loading samples...')
+logger.info('loading samples...')
 start = time.time()
 with open(data_file, 'rb') as file:
     data = pickle.load(file)
 elapsed = time.time() - start
-print('elapsed: {:.4f}'.format(elapsed))
+logger.info('elapsed: {:.4f}'.format(elapsed))
 
 
 def get_data(filename):

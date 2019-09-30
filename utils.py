@@ -1,5 +1,4 @@
 import argparse
-import logging
 import re
 import unicodedata
 
@@ -132,16 +131,6 @@ def parse_args():
     parser.add_argument('--checkpoint', type=str, default=None, help='checkpoint')
     args = parser.parse_args()
     return args
-
-
-def get_logger():
-    logger = logging.getLogger()
-    handler = logging.StreamHandler()
-    formatter = logging.Formatter("%(asctime)s [%(levelname)s] [%(threadName)s] %(name)s: %(message)s")
-    handler.setFormatter(formatter)
-    logger.addHandler(handler)
-    logger.setLevel(logging.DEBUG)
-    return logger
 
 
 def ensure_folder(folder):
