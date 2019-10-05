@@ -1,77 +1,45 @@
 # import the necessary packages
-import os
 import pickle
 import random
+import time
 
-import keras.backend as K
-import nltk
-import numpy as np
-from gensim.models import KeyedVectors
+import torch
 
-from config import stop_word, unknown_word, Tx, Ty, embedding_size, hidden_size, unknown_embedding, stop_embedding, \
-    vocab_size_zh
-from config import valid_translation_folder, valid_translation_en_filename, valid_translation_zh_filename
-from model import build_model
+from config import n_src_vocab, n_tgt_vocab, sos_id, eos_id, logger, data_file
+from transformer.decoder import Decoder
+from transformer.encoder import Encoder
+from transformer.transformer import Transformer
+from utils import parse_args
 
 if __name__ == '__main__':
-    channel = 3
+    args = parse_args()
+    start = time.time()
+    encoder_fn = 'encoder.pt'
+    decoder_fn = 'decoder.pt'
+    print('loading {} & {}...'.format(encoder_fn, decoder_fn))
+    encoder = Encoder(n_src_vocab, args.n_layers_enc, args.n_head,
+                      args.d_k, args.d_v, args.d_model, args.d_inner,
+                      dropout=args.dropout, pe_maxlen=args.pe_maxlen)
+    decoder = Decoder(sos_id, eos_id, n_tgt_vocab,
+                      args.d_word_vec, args.n_layers_dec, args.n_head,
+                      args.d_k, args.d_v, args.d_model, args.d_inner,
+                      dropout=args.dropout,
+                      tgt_emb_prj_weight_sharing=args.tgt_emb_prj_weight_sharing,
+                      pe_maxlen=args.pe_maxlen)
+    encoder.load_state_dict(torch.load(encoder_fn))
+    decoder.load_state_dict(torch.load(decoder_fn))
+    model = Transformer(encoder, decoder)
+    print('elapsed {} sec'.format(time.time() - start))
 
-    model_weights_path = 'models/model.01-10.3439.hdf5'
-    model = build_model()
-    model.load_weights(model_weights_path)
+    logger.info('loading samples...')
+    start = time.time()
+    with open(data_file, 'rb') as file:
+        data = pickle.load(file)
+    elapsed = time.time() - start
+    logger.info('elapsed: {:.4f}'.format(elapsed))
 
-    print('loading fasttext word embedding(en)')
-    word_vectors_en = KeyedVectors.load_word2vec_format('data/wiki.en.vec')
+    samples = data['valid']
+    samples = random.sample(samples, 10)
 
-    vocab_zh = pickle.load(open('data/vocab_train_zh.p', 'rb'))
-    idx2word_zh = vocab_zh
-    print('len(idx2word_zh): ' + str(len(idx2word_zh)))
-    word2idx_zh = dict(zip(idx2word_zh, range(len(vocab_zh))))
-    print('vocab_size_zh: ' + str(vocab_size_zh))
-
-    print(model.summary())
-
-    translation_path_en = os.path.join(valid_translation_folder, valid_translation_en_filename)
-    translation_path_zh = os.path.join(valid_translation_folder, valid_translation_zh_filename)
-    filename = 'data/samples_valid.p'
-
-    print('loading valid texts and vocab')
-    with open(translation_path_en, 'r') as f:
-        data_en = f.readlines()
-
-    with open(translation_path_zh, 'r') as f:
-        data_zh = f.readlines()
-
-    indices = range(len(data_en))
-
-    length = 10
-    samples = random.sample(indices, length)
-
-    for i in range(length):
-        idx = samples[i]
-        sentence_en = data_en[idx]
-        print(sentence_en)
-        tokens = nltk.word_tokenize(sentence_en)
-        x = np.zeros((1, Tx, embedding_size), np.float32)
-        for j, word in enumerate(tokens):
-            try:
-                x[0, j] = word_vectors_en[word]
-            except KeyError:
-                word = unknown_word
-                x[0, j] = unknown_embedding
-
-        x[0, len(tokens)] = stop_embedding
-
-        preds = model.predict(x)
-        print('preds.shape: ' + str(preds.shape))
-
-        output_zh = []
-        for t in range(Ty):
-            idx = np.argmax(preds[0][t])
-            word_pred = idx2word_zh[idx]
-            output_zh.append(word_pred)
-            if word_pred == stop_word:
-                break
-        print(' '.join(output_zh))
-
-    K.clear_session()
+    for sample in samples:
+        print(sample)
