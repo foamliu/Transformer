@@ -1,14 +1,18 @@
 import pickle
+import time
 
 import numpy as np
 from torch.utils.data import Dataset
 from torch.utils.data.dataloader import default_collate
 
-from config import data_file, vocab_file, IGNORE_ID, pad_id
+from config import data_file, vocab_file, IGNORE_ID, pad_id, logger
 
-print('loading samples...')
+logger.info('loading samples...')
+start = time.time()
 with open(data_file, 'rb') as file:
     data = pickle.load(file)
+elapsed = time.time() - start
+logger.info('elapsed: {:.4f}'.format(elapsed))
 
 
 def get_data(filename):
@@ -44,23 +48,6 @@ class AiChallenger2017Dataset(Dataset):
     def __init__(self, split):
         self.samples = data[split]
 
-        # with open(vocab_file, 'rb') as file:
-        #     data = pickle.load(file)
-        #
-        # self.src_char2idx = data['dict']['src_char2idx']
-        # self.src_idx2char = data['dict']['src_idx2char']
-        # self.tgt_char2idx = data['dict']['tgt_char2idx']
-        # self.tgt_idx2char = data['dict']['tgt_idx2char']
-        #
-        # if split == 'train':
-        #     self.src = get_data(train_translation_en_filename)
-        #     self.dst = get_data(train_translation_zh_filename)
-        # else:
-        #     self.src = get_data(valid_translation_en_filename)
-        #     self.dst = get_data(valid_translation_zh_filename)
-
-        # assert(len(self.src) == len(self.dst))
-
     def __getitem__(self, i):
         sample = self.samples[i]
         src_text = sample['in']
@@ -86,7 +73,7 @@ def main():
 
     src_text, tgt_text = valid_dataset[0]
     src_text = sequence_to_text(src_text, src_idx2char)
-    src_text = ''.join(src_text)
+    src_text = ' '.join(src_text)
     print('src_text: ' + src_text)
 
     tgt_text = sequence_to_text(tgt_text, tgt_idx2char)

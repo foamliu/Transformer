@@ -1,19 +1,21 @@
+import math
 import time
 
 import numpy as np
 import torch
 from tensorboardX import SummaryWriter
-# from torch import nn
-from tqdm import tqdm
 
-from config import device, print_freq, sos_id, eos_id, n_src_vocab, n_tgt_vocab, grad_clip
+from config import device, print_freq, sos_id, eos_id, n_src_vocab, n_tgt_vocab, grad_clip, logger
 from data_gen import AiChallenger2017Dataset, pad_collate
 from transformer.decoder import Decoder
 from transformer.encoder import Encoder
 from transformer.loss import cal_performance
 from transformer.optimizer import TransformerOptimizer
 from transformer.transformer import Transformer
-from utils import parse_args, save_checkpoint, AverageMeter, get_logger, clip_gradient
+from utils import parse_args, save_checkpoint, AverageMeter, clip_gradient
+
+
+# from torch import nn
 
 
 def train_net(args):
@@ -38,7 +40,7 @@ def train_net(args):
                           tgt_emb_prj_weight_sharing=args.tgt_emb_prj_weight_sharing,
                           pe_maxlen=args.pe_maxlen)
         model = Transformer(encoder, decoder)
-        print(model)
+        # print(model)
         # model = nn.DataParallel(model)
 
         # optimizer
@@ -51,8 +53,6 @@ def train_net(args):
         epochs_since_improvement = checkpoint['epochs_since_improvement']
         model = checkpoint['model']
         optimizer = checkpoint['optimizer']
-
-    logger = get_logger()
 
     # Move to GPU, if available
     model = model.to(device)
@@ -74,18 +74,18 @@ def train_net(args):
                            epoch=epoch,
                            logger=logger,
                            writer=writer)
-        writer.add_scalar('model/train_loss', train_loss, epoch)
 
-        lr = optimizer.lr
-        print('\nLearning rate: {}'.format(lr))
-        step_num = optimizer.step_num
-        print('Step num: {}\n'.format(step_num))
+        writer.add_scalar('epoch/train_loss', train_loss, epoch)
+        writer.add_scalar('epoch/learning_rate', optimizer.lr, epoch)
+
+        print('\nLearning rate: {}'.format(optimizer.lr))
+        print('Step num: {}\n'.format(optimizer.step_num))
 
         # One epoch's validation
         valid_loss = valid(valid_loader=valid_loader,
                            model=model,
                            logger=logger)
-        writer.add_scalar('model/valid_loss', valid_loss, epoch)
+        writer.add_scalar('epoch/valid_loss', valid_loss, epoch)
 
         # Check if there was an improvement
         is_best = valid_loss < best_loss
@@ -119,6 +119,12 @@ def train(train_loader, model, optimizer, epoch, logger, writer):
         # Forward prop.
         pred, gold = model(padded_input, input_lengths, padded_target)
         loss, n_correct = cal_performance(pred, gold, smoothing=args.label_smoothing)
+        try:
+            assert (not math.isnan(loss.item()))
+        except AssertionError:
+            print('n_correct: ' + str(n_correct))
+            print('data: ' + str(n_correct))
+            continue
 
         # Back prop.
         optimizer.zero_grad()
@@ -133,6 +139,7 @@ def train(train_loader, model, optimizer, epoch, logger, writer):
         # Keep track of metrics
         elapsed = time.time() - start
         start = time.time()
+
         losses.update(loss.item())
         times.update(elapsed)
 
@@ -142,9 +149,8 @@ def train(train_loader, model, optimizer, epoch, logger, writer):
                         'Batch time {time.val:.5f} ({time.avg:.5f})\t'
                         'Loss {loss.val:.5f} ({loss.avg:.5f})'.format(epoch, i, len(train_loader), time=times,
                                                                       loss=losses))
-
-            writer.add_scalar('model/train_loss', loss.item(), optimizer.step_num)
-            writer.add_scalar('model/learning_rate', optimizer.lr, optimizer.step_num)
+            writer.add_scalar('step_num/train_loss', losses.avg, optimizer.step_num)
+            writer.add_scalar('step_num/learning_rate', optimizer.lr, optimizer.step_num)
 
     return losses.avg
 
@@ -155,7 +161,7 @@ def valid(valid_loader, model, logger):
     losses = AverageMeter()
 
     # Batches
-    for data in tqdm(valid_loader):
+    for data in valid_loader:
         # Move to GPU, if available
         padded_input, padded_target, input_lengths = data
         padded_input = padded_input.to(device)
@@ -166,6 +172,12 @@ def valid(valid_loader, model, logger):
             # Forward prop.
             pred, gold = model(padded_input, input_lengths, padded_target)
             loss, n_correct = cal_performance(pred, gold, smoothing=args.label_smoothing)
+            try:
+                assert (not math.isnan(loss.item()))
+            except AssertionError:
+                print('n_correct: ' + str(n_correct))
+                print('data: ' + str(n_correct))
+                continue
 
         # Keep track of metrics
         losses.update(loss.item())

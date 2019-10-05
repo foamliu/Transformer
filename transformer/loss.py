@@ -45,8 +45,6 @@ def cal_loss(pred, gold, smoothing=0.0):
         loss = -(one_hot * log_prb).sum(dim=1)
         loss = loss.masked_select(non_pad_mask).sum() / n_word
     else:
-        loss = F.cross_entropy(pred, gold,
-                               ignore_index=IGNORE_ID,
-                               reduction='elementwise_mean')
+        loss = F.cross_entropy(pred, gold, ignore_index=IGNORE_ID, reduction='mean')
 
     return loss

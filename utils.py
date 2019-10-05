@@ -1,5 +1,6 @@
 import argparse
-import logging
+import re
+import unicodedata
 
 import torch
 
@@ -73,7 +74,7 @@ def accuracy(scores, targets, k=1):
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description='Speech Transformer')
+    parser = argparse.ArgumentParser(description='Transformer')
 
     # Network architecture
     # encoder
@@ -106,18 +107,18 @@ def parse_args():
                         help='label smoothing')
 
     # Training config
-    parser.add_argument('--epochs', default=150, type=int,
+    parser.add_argument('--epochs', default=1000, type=int,
                         help='Number of maximum epochs')
     # minibatch
     parser.add_argument('--shuffle', default=1, type=int,
                         help='reshuffle the data at every epoch')
-    parser.add_argument('--batch-size', default=128, type=int,
+    parser.add_argument('--batch-size', default=384, type=int,
                         help='Batch size')
     parser.add_argument('--batch_frames', default=0, type=int,
                         help='Batch frames. If this is not 0, batch size will make no sense')
-    parser.add_argument('--maxlen-in', default=100, type=int, metavar='ML',
+    parser.add_argument('--maxlen-in', default=50, type=int, metavar='ML',
                         help='Batch size is reduced if the input sequence length > ML')
-    parser.add_argument('--maxlen-out', default=50, type=int, metavar='ML',
+    parser.add_argument('--maxlen-out', default=25, type=int, metavar='ML',
                         help='Batch size is reduced if the output sequence length > ML')
     parser.add_argument('--num-workers', default=8, type=int,
                         help='Number of workers to generate minibatch')
@@ -130,16 +131,6 @@ def parse_args():
     parser.add_argument('--checkpoint', type=str, default=None, help='checkpoint')
     args = parser.parse_args()
     return args
-
-
-def get_logger():
-    logger = logging.getLogger()
-    handler = logging.StreamHandler()
-    formatter = logging.Formatter("%(asctime)s %(levelname)s \t%(message)s")
-    handler.setFormatter(formatter)
-    logger.addHandler(handler)
-    logger.setLevel(logging.DEBUG)
-    return logger
 
 
 def ensure_folder(folder):
@@ -166,3 +157,23 @@ def text_to_sequence(text, char2idx):
 def sequence_to_text(seq, idx2char):
     result = [idx2char[idx] for idx in seq]
     return result
+
+
+# Turn a Unicode string to plain ASCII, thanks to
+# http://stackoverflow.com/a/518232/2809427
+def unicodeToAscii(s):
+    return ''.join(
+        c for c in unicodedata.normalize('NFD', s)
+        if unicodedata.category(c) != 'Mn'
+    )
+
+
+def normalizeString(s):
+    s = unicodeToAscii(s.lower().strip())
+    s = re.sub(r"([.!?])", r" \1", s)
+    s = re.sub(r"[^a-zA-Z.!?]+", r" ", s)
+    return s
+
+
+def encode_text(word_map, c):
+    return [word_map.get(word, word_map['<unk>']) for word in c]

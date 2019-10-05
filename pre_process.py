@@ -1,9 +1,14 @@
 import pickle
+from collections import Counter
 
+import jieba
+import nltk
 from tqdm import tqdm
 
 from config import train_translation_en_filename, train_translation_zh_filename, valid_translation_en_filename, \
-    valid_translation_zh_filename, vocab_file, maxlen_in, maxlen_out, data_file, eos_id
+    valid_translation_zh_filename, vocab_file, maxlen_in, maxlen_out, data_file, sos_id, eos_id, n_src_vocab, \
+    n_tgt_vocab, unk_id
+from utils import normalizeString, encode_text
 
 
 def build_vocab(token, word2idx, idx2char):
@@ -13,18 +18,37 @@ def build_vocab(token, word2idx, idx2char):
         idx2char[next_index] = token
 
 
-def process(file, word2idx, idx2char):
+def process(file, lang='zh'):
     print('processing {}...'.format(file))
     with open(file, 'r', encoding='utf-8') as f:
         data = f.readlines()
 
-    # lengths = []
+    word_freq = Counter()
+    lengths = []
 
     for line in tqdm(data):
-        for token in line.strip():
-            build_vocab(token, word2idx, idx2char)
+        sentence = line.strip()
+        if lang == 'en':
+            sentence_en = sentence.lower()
+            tokens = [normalizeString(s) for s in nltk.word_tokenize(sentence_en)]
+            word_freq.update(list(tokens))
+            vocab_size = n_src_vocab
+        else:
+            seg_list = jieba.cut(sentence.strip())
+            tokens = list(seg_list)
+            word_freq.update(list(tokens))
+            vocab_size = n_tgt_vocab
 
-    #     lengths.append(len(line.strip()))
+        lengths.append(len(tokens))
+
+    words = word_freq.most_common(vocab_size - 4)
+    word_map = {k[0]: v + 4 for v, k in enumerate(words)}
+    word_map['<pad>'] = 0
+    word_map['<sos>'] = 1
+    word_map['<eos>'] = 2
+    word_map['<unk>'] = 3
+    print(len(word_map))
+    print(words[:100])
     #
     # n, bins, patches = plt.hist(lengths, 50, density=True, facecolor='g', alpha=0.75)
     #
@@ -33,6 +57,11 @@ def process(file, word2idx, idx2char):
     # plt.title('Histogram of Lengths')
     # plt.grid(True)
     # plt.show()
+
+    word2idx = word_map
+    idx2char = {v: k for k, v in word2idx.items()}
+
+    return word2idx, idx2char
 
 
 def get_data(in_file, out_file):
@@ -45,33 +74,25 @@ def get_data(in_file, out_file):
     samples = []
 
     for i in tqdm(range(len(in_lines))):
-        in_line = in_lines[i].strip()
-        in_data = [src_char2idx[token] for token in in_line]
+        sentence_en = in_lines[i].strip().lower()
+        tokens = [normalizeString(s.strip()) for s in nltk.word_tokenize(sentence_en)]
+        in_data = encode_text(src_char2idx, tokens)
 
-        out_line = out_lines[i].strip()
-        out_data = [tgt_char2idx[token] for token in out_line] + [eos_id]
+        sentence_zh = out_lines[i].strip()
+        tokens = jieba.cut(sentence_zh.strip())
+        out_data = [sos_id] + encode_text(tgt_char2idx, tokens) + [eos_id]
 
-        if len(in_data) < maxlen_in and len(out_data) < maxlen_out:
+        if len(in_data) < maxlen_in and len(out_data) < maxlen_out and unk_id not in in_data and unk_id not in out_data:
             samples.append({'in': in_data, 'out': out_data})
     return samples
 
 
 if __name__ == '__main__':
-    src_char2idx = {'<pad>': 0, '<sos>': 1, '<eos>': 2}
-    src_idx2char = {0: '<pad>', 1: '<sos>', 2: '<eos>'}
-    tgt_char2idx = {'<pad>': 0, '<sos>': 1, '<eos>': 2}
-    tgt_idx2char = {0: '<pad>', 1: '<sos>', 2: '<eos>'}
-
-    process(train_translation_en_filename, src_char2idx, src_idx2char)
-    process(train_translation_zh_filename, tgt_char2idx, tgt_idx2char)
-    process(valid_translation_en_filename, src_char2idx, src_idx2char)
-    process(valid_translation_zh_filename, tgt_char2idx, tgt_idx2char)
+    src_char2idx, src_idx2char = process(train_translation_en_filename, lang='en')
+    tgt_char2idx, tgt_idx2char = process(train_translation_zh_filename, lang='zh')
 
     print(len(src_char2idx))
     print(len(tgt_char2idx))
-
-    # print(src_char2idx)
-    # print(tgt_char2idx)
 
     data = {
         'dict': {
