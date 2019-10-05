@@ -45,4 +45,35 @@ $ python demo.py
 
 <pre>
 
+< because there  s still a chance that you might be alive tomorrow
+= 因为你还有希望可能明天还活着，
+> 因为还有可能你明天还活着，
+< oh   man   do n t worry about that   man  . ai n t nobody gon na take you nowhere  .
+= 哦，伙计，别担心那个。没人会带你走的。
+> 哦，伙计，别担心，没人会带你去任何地方。
+< we  ll ring you again when we can get to the next pit stop  .
+= 我们到下一个休息站再打给你。
+> 我们到下一个地方再打给你。
+< i do n t know why we are listening to you at all  .
+= 我就不知道我们为什么还要在这儿听你讲话了。
+> 我不知道为什么我们要听你的。
+< i may not have been here long   but i  ve learned one thing  .
+= 我在这里的时间也许不长，但我至少明白了一样。
+> 我可能来不了多久，但我学到了一件事。
+< hey   hey   get off me  .   what are you doing  ?
+= 嘿，嘿，别碰我。- 发生什么了？
+> 嘿，嘿，别碰我。- 你在干什么？
+< and always talking about art and books and movies and everything  .
+= 他总是谈论艺术、书籍、电影和所有的东西。
+> 总是谈论艺术和书。
+< you  re doing this for the same reason i  m doing this  .
+= 你做这些的原因是和我一样的。
+> 你这么做是为了同样的原因。
+< it  s a warm country  . oh   captain   would n t you like to come along too  ?
+= 是个友好的国家。船长，你不来吗？
+> 是个温暖的国家。哦，上尉，你不想一起去吗？
+< i  m gon na need a little help  . but you said you could do it  .
+= 我需要一点帮助。你说过你行的。
+> 我需要帮助。但你说你能做到的。
+
 </pre>
