@@ -22,7 +22,7 @@ if __name__ == '__main__':
     print('saving {} & {}...'.format(encoder_fn, decoder_fn))
     start = time.time()
     torch.save(model.encoder.state_dict(), encoder_fn)
-    torch.save(model.decoder_.state_dict(), decoder_fn)
+    torch.save(model.decoder.state_dict(), decoder_fn)
     print('elapsed {} sec'.format(time.time() - start))
 
     print('loading {}...'.format(encoder_fn))
