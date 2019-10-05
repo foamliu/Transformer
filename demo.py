@@ -47,6 +47,7 @@ if __name__ == '__main__':
 
         sentence_in = ' '.join([src_idx2char[idx] for idx in sentence_in])
         sentence_out = ''.join([tgt_idx2char[idx] for idx in sentence_out])
+        sentence_out = sentence_out.replace('<sos>', '').replace('<eos>', '')
         print('input: ' + sentence_in)
         print('gt: ' + sentence_out)
 
