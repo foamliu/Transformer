@@ -1,5 +1,8 @@
 import torch.nn as nn
 
+from .decoder import Decoder
+from .encoder import Encoder
+
 
 class Transformer(nn.Module):
     """An encoder-decoder framework only includes attention.
@@ -10,9 +13,16 @@ class Transformer(nn.Module):
         self.encoder = encoder
         self.decoder = decoder
 
-        for p in self.parameters():
-            if p.dim() > 1:
-                nn.init.xavier_uniform_(p)
+        if encoder is not None and decoder is not None:
+            self.encoder = encoder
+            self.decoder = decoder
+
+            for p in self.parameters():
+                if p.dim() > 1:
+                    nn.init.xavier_uniform_(p)
+        else:
+            self.encoder = Encoder()
+            self.decoder = Decoder()
 
     def forward(self, padded_input, input_lengths, padded_target):
         """

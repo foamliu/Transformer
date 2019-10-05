@@ -1,6 +1,6 @@
 import torch.nn as nn
 
-from config import pad_id
+from config import pad_id, n_src_vocab
 from .attention import MultiHeadAttention
 from .module import PositionalEncoding, PositionwiseFeedForward
 from .utils import get_non_pad_mask, get_attn_pad_mask
@@ -10,8 +10,8 @@ class Encoder(nn.Module):
     """Encoder of Transformer including self-attention and feed forward.
     """
 
-    def __init__(self, n_src_vocab, n_layers, n_head, d_k, d_v,
-                 d_model, d_inner, dropout=0.1, pe_maxlen=5000):
+    def __init__(self, n_src_vocab=n_src_vocab, n_layers=6, n_head=8, d_k=64, d_v=64,
+                 d_model=512, d_inner=2048, dropout=0.1, pe_maxlen=5000):
         super(Encoder, self).__init__()
         # parameters
         self.n_src_vocab = n_src_vocab

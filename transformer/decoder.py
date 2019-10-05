@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from config import IGNORE_ID
+from config import IGNORE_ID, sos_id, eos_id, n_tgt_vocab
 from .attention import MultiHeadAttention
 from .module import PositionalEncoding, PositionwiseFeedForward
 from .utils import get_attn_key_pad_mask, get_attn_pad_mask, get_non_pad_mask, get_subsequent_mask, pad_list
@@ -12,10 +12,10 @@ class Decoder(nn.Module):
     ''' A decoder model with self attention mechanism. '''
 
     def __init__(
-            self, sos_id, eos_id,
-            n_tgt_vocab, d_word_vec,
-            n_layers, n_head, d_k, d_v,
-            d_model, d_inner, dropout=0.1,
+            self, sos_id=sos_id, eos_id=eos_id,
+            n_tgt_vocab=n_tgt_vocab, d_word_vec=512,
+            n_layers=6, n_head=8, d_k=64, d_v=64,
+            d_model=512, d_inner=2048, dropout=0.1,
             tgt_emb_prj_weight_sharing=True,
             pe_maxlen=5000):
         super(Decoder, self).__init__()
