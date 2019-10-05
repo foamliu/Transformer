@@ -57,6 +57,9 @@ if __name__ == '__main__':
         input = np.array(sentence_in, dtype=np.long)
         input = torch.from_numpy(input)
 
+        input_length = np.array(len(sentence_in), dtype=np.long)
+        input_length = torch.from_numpy(input_length)
+
         nbest_hyps = model.recognize(input=input, input_length=len(sentence_in), char_list=tgt_idx2char, args=args)
         print(nbest_hyps)
 
