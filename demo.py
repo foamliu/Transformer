@@ -55,6 +55,8 @@ if __name__ == '__main__':
         sentence_out = sample['out']
 
         sentence_in = [src_idx2char[idx] for idx in sentence_in]
+        sentence_in = ' '.join(sentence_in)
         sentence_out = [tgt_idx2char[idx] for idx in sentence_out]
+        sentence_out = ''.join(sentence_out)
         print(sentence_in)
         print(sentence_out)
