@@ -2,19 +2,22 @@
 import pickle
 import random
 import time
+
 import numpy as np
 import torch
 
-from config import n_src_vocab, n_tgt_vocab, sos_id, eos_id, logger, data_file, vocab_file
-from transformer.decoder import Decoder
-from transformer.encoder import Encoder
+from config import device, logger, data_file, vocab_file
 from transformer.transformer import Transformer
-from utils import parse_args
 
 if __name__ == '__main__':
-    checkpoint = 'BEST_checkpoint.tar'
-    checkpoint = torch.load(checkpoint)
-    model = checkpoint['model']
+    filename = 'transformer.pt'
+    print('loading {}...'.format(filename))
+    start = time.time()
+    model = Transformer()
+    model.load_state_dict(torch.load(filename))
+    print('elapsed {} sec'.format(time.time() - start))
+    model = model.to(device)
+    model.eval()
 
     logger.info('loading samples...')
     start = time.time()
