@@ -5,7 +5,7 @@ class Transformer(nn.Module):
     """An encoder-decoder framework only includes attention.
     """
 
-    def __init__(self, encoder, decoder):
+    def __init__(self, encoder=None, decoder=None):
         super(Transformer, self).__init__()
         self.encoder = encoder
         self.decoder = decoder
