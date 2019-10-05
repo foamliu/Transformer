@@ -48,8 +48,7 @@ if __name__ == '__main__':
         print('gt: ' + sentence_out)
 
         input = torch.from_numpy(np.array(sentence_in, dtype=np.long)).to(device)
-        input_length = [input[0].shape[0]]
-        input_length = torch.LongTensor(input_length).to(device)
+        input_length = torch.LongTensor([len(sentence_in)]).to(device)
 
         nbest_hyps = model.recognize(input=input, input_length=len(sentence_in), char_list=tgt_idx2char)
         print(nbest_hyps)
