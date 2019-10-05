@@ -51,7 +51,7 @@ if __name__ == '__main__':
         print('input: ' + sentence_in)
         print('gt: ' + sentence_out)
 
-        nbest_hyps = model.recognize(input=input, input_length=len(sentence_in), char_list=tgt_idx2char)
+        nbest_hyps = model.recognize(input=input, input_length=input_length, char_list=tgt_idx2char)
         print(nbest_hyps)
 
         out_list = []
