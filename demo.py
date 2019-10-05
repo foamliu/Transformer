@@ -42,6 +42,11 @@ if __name__ == '__main__':
         sentence_in = sample['in']
         sentence_out = sample['out']
 
+        sentence_in = ' '.join([src_idx2char[idx] for idx in sentence_in])
+        sentence_out = ''.join([tgt_idx2char[idx] for idx in sentence_out])
+        print('input: ' + sentence_in)
+        print('gt: ' + sentence_out)
+
         input = torch.from_numpy(np.array(sentence_in, dtype=np.long)).to(device)
         input_length = [input[0].shape[0]]
         input_length = torch.LongTensor(input_length).to(device)
@@ -57,10 +62,3 @@ if __name__ == '__main__':
             out_list.append(out)
         out = out_list[0].replace('<sos>', '').replace('<eos>', '')
         print('out: {}'.format(out))
-
-        sentence_in = [src_idx2char[idx] for idx in sentence_in]
-        sentence_in = ' '.join(sentence_in)
-        sentence_out = [tgt_idx2char[idx] for idx in sentence_out]
-        sentence_out = ''.join(sentence_out)
-        print(sentence_in)
-        print(sentence_out)
