@@ -29,7 +29,7 @@ if __name__ == '__main__':
     encoder.load_state_dict(torch.load(encoder_fn))
     decoder.load_state_dict(torch.load(decoder_fn))
     model = Transformer(encoder, decoder)
-    logger.info('elapsed {} sec'.format(time.time() - start))
+    logger.info('elapsed {} seconds'.format(time.time() - start))
 
     logger.info('loading samples...')
     start = time.time()
