@@ -2,7 +2,7 @@
 import pickle
 import random
 import time
-
+import numpy as np
 import torch
 
 from config import n_src_vocab, n_tgt_vocab, sos_id, eos_id, logger, data_file, vocab_file
@@ -54,7 +54,10 @@ if __name__ == '__main__':
         sentence_in = sample['in']
         sentence_out = sample['out']
 
-        nbest_hyps = model.recognize(input=sentence_in, input_length=len(sentence_in), char_list=tgt_idx2char, args=args)
+        input = np.array(sentence_in, dtype=np.long)
+        input = torch.from_numpy(input)
+
+        nbest_hyps = model.recognize(input=input, input_length=len(sentence_in), char_list=tgt_idx2char, args=args)
         print(nbest_hyps)
 
         sentence_in = [src_idx2char[idx] for idx in sentence_in]
