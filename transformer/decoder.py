@@ -131,12 +131,9 @@ class Decoder(nn.Module):
             nbest_hyps:
         """
         # search params
-        beam = args.beam_size
-        nbest = args.nbest
-        if args.decode_max_len == 0:
-            maxlen = encoder_outputs.size(0)
-        else:
-            maxlen = args.decode_max_len
+        beam = 5
+        nbest = 1
+        maxlen = 100
 
         encoder_outputs = encoder_outputs.unsqueeze(0)
 

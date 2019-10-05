@@ -37,7 +37,7 @@ class Transformer(nn.Module):
                                       input_lengths)
         return pred, gold
 
-    def recognize(self, input, input_length, char_list, args):
+    def recognize(self, input, input_length, char_list, args=None):
         """Sequence-to-Sequence beam search, decode one utterence now.
         Args:
             input: T x D
