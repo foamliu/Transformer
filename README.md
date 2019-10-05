@@ -5,10 +5,8 @@
 
 ## 依赖
 
-- [NumPy](http://docs.scipy.org/doc/numpy-1.10.1/user/install.html)
-- [Tensorflow](https://www.tensorflow.org/versions/r0.8/get_started/os_setup.html)
-- [Keras](https://keras.io/#installation)
-- [OpenCV](https://opencv-python-tutroals.readthedocs.io/en/latest/)
+- Python 3.5.2
+- PyTorch 1.0
 
 ## 数据集
 
@@ -23,7 +21,7 @@
 ### 数据预处理
 提取训练和验证样本：
 ```bash
-$ python pre-process.py
+$ python pre_process.py
 ```
 
 ### 训练
@@ -37,8 +35,11 @@ $ tensorboard --logdir path_to_current_dir/logs
 ```
 
 ### Demo
-下载 [预训练模型](https://github.com/foamliu/Scene-Classification/releases/download/v1.0/model.85-0.7657.hdf5) 放在 models 目录然后执行:
+下载 [预训练模型](https://github.com/foamliu/Scene-Classification/releases/download/v1.0/model.85-0.7657.hdf5) 然后执行:
 
 ```bash
 $ python demo.py
 ```
+
+下面第一行是英文例句（数据集），第二行是人翻中文例句（数据集），第三行是机翻（本模型）中文句子（实时生成）。
+

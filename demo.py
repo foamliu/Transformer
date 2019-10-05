@@ -48,11 +48,11 @@ if __name__ == '__main__':
         sentence_in = ' '.join([src_idx2char[idx] for idx in sentence_in])
         sentence_out = ''.join([tgt_idx2char[idx] for idx in sentence_out])
         sentence_out = sentence_out.replace('<sos>', '').replace('<eos>', '')
-        print('input: ' + sentence_in)
-        print('gt: ' + sentence_out)
+        print('< ' + sentence_in)
+        print('= ' + sentence_out)
 
         nbest_hyps = model.recognize(input=input, input_length=input_length, char_list=tgt_idx2char)
-        print(nbest_hyps)
+        # print(nbest_hyps)
 
         out_list = []
         for hyp in nbest_hyps:
@@ -61,4 +61,4 @@ if __name__ == '__main__':
             out = ''.join(out)
             out_list.append(out)
         out = out_list[0].replace('<sos>', '').replace('<eos>', '')
-        print('out: {}'.format(out))
+        print('> {}'.format(out))
