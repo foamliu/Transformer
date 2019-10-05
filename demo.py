@@ -5,7 +5,7 @@ import time
 
 import torch
 
-from config import n_src_vocab, n_tgt_vocab, sos_id, eos_id, logger, data_file
+from config import n_src_vocab, n_tgt_vocab, sos_id, eos_id, logger, data_file, vocab_file
 from transformer.decoder import Decoder
 from transformer.encoder import Encoder
 from transformer.transformer import Transformer
@@ -35,11 +35,26 @@ if __name__ == '__main__':
     start = time.time()
     with open(data_file, 'rb') as file:
         data = pickle.load(file)
+        samples = data['valid']
     elapsed = time.time() - start
     logger.info('elapsed: {:.4f}'.format(elapsed))
 
-    samples = data['valid']
+    logger.info('loading vocab...')
+    start = time.time()
+    with open(vocab_file, 'rb') as file:
+        data = pickle.load(file)
+        src_idx2char = data['dict']['src_idx2char']
+        tgt_idx2char = data['dict']['tgt_idx2char']
+    elapsed = time.time() - start
+    logger.info('elapsed: {:.4f}'.format(elapsed))
+
     samples = random.sample(samples, 10)
 
     for sample in samples:
-        print(sample)
+        sentence_in = sample['in']
+        sentence_out = sample['out']
+
+        sentence_in = [src_idx2char[idx] for idx in sentence_in]
+        sentence_out = [tgt_idx2char[idx] for idx in sentence_out]
+        print(sentence_in)
+        print(sentence_out)
