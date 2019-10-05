@@ -37,7 +37,7 @@ if __name__ == '__main__':
         data = pickle.load(file)
         samples = data['valid']
     elapsed = time.time() - start
-    logger.info('elapsed: {:.4f}'.format(elapsed))
+    logger.info('elapsed: {:.4f} seconds'.format(elapsed))
 
     logger.info('loading vocab...')
     start = time.time()
@@ -46,13 +46,16 @@ if __name__ == '__main__':
         src_idx2char = data['dict']['src_idx2char']
         tgt_idx2char = data['dict']['tgt_idx2char']
     elapsed = time.time() - start
-    logger.info('elapsed: {:.4f}'.format(elapsed))
+    logger.info('elapsed: {:.4f} seconds'.format(elapsed))
 
     samples = random.sample(samples, 10)
 
     for sample in samples:
         sentence_in = sample['in']
         sentence_out = sample['out']
+
+        nbest_hyps = model.recognize(input=sentence_in, input_length=len(sentence_in), char_list=tgt_idx2char, args=args)
+        print(nbest_hyps)
 
         sentence_in = [src_idx2char[idx] for idx in sentence_in]
         sentence_in = ' '.join(sentence_in)
