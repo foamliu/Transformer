@@ -1,6 +1,7 @@
 import time
 
 import torch
+from transformer.transformer import Transformer
 
 if __name__ == '__main__':
     checkpoint = 'BEST_checkpoint.tar'
@@ -19,7 +20,6 @@ if __name__ == '__main__':
 
     print('loading {}...'.format(filename))
     start = time.time()
-    from transformer import Transformer
 
     model = Transformer()
     model.load_state_dict(torch.load(filename))
