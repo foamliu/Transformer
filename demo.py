@@ -51,8 +51,9 @@ if __name__ == '__main__':
         print('< ' + sentence_in)
         print('= ' + sentence_out)
 
-        nbest_hyps = model.recognize(input=input, input_length=input_length, char_list=tgt_idx2char)
-        # print(nbest_hyps)
+        with torch.no_grad():
+            nbest_hyps = model.recognize(input=input, input_length=input_length, char_list=tgt_idx2char)
+            # print(nbest_hyps)
 
         out_list = []
         for hyp in nbest_hyps:
