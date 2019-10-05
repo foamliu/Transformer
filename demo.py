@@ -42,16 +42,16 @@ if __name__ == '__main__':
         sentence_in = sample['in']
         sentence_out = sample['out']
 
-        sentence_in = ' '.join([src_idx2char[idx] for idx in sentence_in])
-        sentence_out = ''.join([tgt_idx2char[idx] for idx in sentence_out])
-        print('input: ' + sentence_in)
-        print('gt: ' + sentence_out)
-
         input = torch.from_numpy(np.array(sentence_in, dtype=np.long)).to(device)
         input_length = torch.LongTensor([len(sentence_in)]).to(device)
 
         nbest_hyps = model.recognize(input=input, input_length=len(sentence_in), char_list=tgt_idx2char)
         print(nbest_hyps)
+
+        sentence_in = ' '.join([src_idx2char[idx] for idx in sentence_in])
+        sentence_out = ''.join([tgt_idx2char[idx] for idx in sentence_out])
+        print('input: ' + sentence_in)
+        print('gt: ' + sentence_out)
 
         out_list = []
         for hyp in nbest_hyps:
