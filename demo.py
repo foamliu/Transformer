@@ -16,7 +16,7 @@ if __name__ == '__main__':
     start = time.time()
     encoder_fn = 'encoder.pt'
     decoder_fn = 'decoder.pt'
-    print('loading {} & {}...'.format(encoder_fn, decoder_fn))
+    logger.info('loading {} & {}...'.format(encoder_fn, decoder_fn))
     encoder = Encoder(n_src_vocab, args.n_layers_enc, args.n_head,
                       args.d_k, args.d_v, args.d_model, args.d_inner,
                       dropout=args.dropout, pe_maxlen=args.pe_maxlen)
@@ -29,7 +29,7 @@ if __name__ == '__main__':
     encoder.load_state_dict(torch.load(encoder_fn))
     decoder.load_state_dict(torch.load(decoder_fn))
     model = Transformer(encoder, decoder)
-    print('elapsed {} sec'.format(time.time() - start))
+    logger.info('elapsed {} sec'.format(time.time() - start))
 
     logger.info('loading samples...')
     start = time.time()
