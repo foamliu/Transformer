@@ -121,7 +121,7 @@ class Decoder(nn.Module):
             return pred, gold, dec_slf_attn_list, dec_enc_attn_list
         return pred, gold
 
-    def recognize_beam(self, encoder_outputs, char_list, args):
+    def recognize_beam(self, encoder_outputs, char_list):
         """Beam search, decode one utterence now.
         Args:
             encoder_outputs: T x H
