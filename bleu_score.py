@@ -53,9 +53,12 @@ if __name__ == '__main__':
         # print('< ' + sentence_in)
         # print('= ' + sentence_out)
 
-        with torch.no_grad():
-            nbest_hyps = model.recognize(input=input, input_length=input_length, char_list=tgt_idx2char)
-            # print(nbest_hyps)
+        try:
+            with torch.no_grad():
+                nbest_hyps = model.recognize(input=input, input_length=input_length, char_list=tgt_idx2char)
+                # print(nbest_hyps)
+        except RuntimeError:
+            continue
 
         out_list = []
         for hyp in nbest_hyps:
@@ -71,6 +74,7 @@ if __name__ == '__main__':
         score = sentence_bleu([reference], hypothesis)
         bleu_scores.append(score)
 
+    print('len(bleu_scores): ' + str(len(bleu_scores)))
     print('np.max(bleu_scores): ' + str(np.max(bleu_scores)))
     print('np.min(bleu_scores): ' + str(np.min(bleu_scores)))
     print('np.mean(bleu_scores): ' + str(np.mean(bleu_scores)))
