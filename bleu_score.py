@@ -61,21 +61,18 @@ if __name__ == '__main__':
             print('sentence_in: ' + sentence_in)
             continue
 
-        out_list = []
+        score_list = []
         for hyp in nbest_hyps:
             out = hyp['yseq']
             out = [tgt_idx2char[idx] for idx in out]
             out = ''.join(out)
             out = out.replace('<sos>', '').replace('<eos>', '')
-            out_list.append(list(out))
-        # out = out_list[0]
-        # print('> {}'.format(out))
+            reference = list(sentence_out)
+            hypothesis = list(out)
+            score = sentence_bleu([reference], hypothesis)
+            score_list.append(score)
 
-        reference = list(sentence_out)
-        hypothesis = out_list
-        score = sentence_bleu([reference], hypothesis)
-        bleu_scores.append(score)
-        break
+        bleu_scores.append(max(score_list))
 
     print('len(bleu_scores): ' + str(len(bleu_scores)))
     print('np.max(bleu_scores): ' + str(np.max(bleu_scores)))
