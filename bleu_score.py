@@ -58,6 +58,7 @@ if __name__ == '__main__':
                 nbest_hyps = model.recognize(input=input, input_length=input_length, char_list=tgt_idx2char)
                 # print(nbest_hyps)
         except RuntimeError:
+            print('sentence_in: ' + sentence_in)
             continue
 
         out_list = []
@@ -65,14 +66,16 @@ if __name__ == '__main__':
             out = hyp['yseq']
             out = [tgt_idx2char[idx] for idx in out]
             out = ''.join(out)
-            out_list.append(out)
-        out = out_list[0].replace('<sos>', '').replace('<eos>', '')
+            out = out.replace('<sos>', '').replace('<eos>', '')
+            out_list.append(list(out))
+        # out = out_list[0]
         # print('> {}'.format(out))
 
         reference = list(sentence_out)
-        hypothesis = list(out)
+        hypothesis = out_list
         score = sentence_bleu([reference], hypothesis)
         bleu_scores.append(score)
+        break
 
     print('len(bleu_scores): ' + str(len(bleu_scores)))
     print('np.max(bleu_scores): ' + str(np.max(bleu_scores)))
