@@ -131,7 +131,7 @@ class Decoder(nn.Module):
             nbest_hyps:
         """
         # search params
-        beam = 20
+        beam = 100
         nbest = 5
         maxlen = 100
 
