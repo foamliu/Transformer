@@ -5,6 +5,7 @@ import time
 import numpy as np
 import torch
 from nltk.translate.bleu_score import sentence_bleu
+from tqdm import tqdm
 
 from config import device, logger, data_file, vocab_file
 from transformer.transformer import Transformer
@@ -39,7 +40,7 @@ if __name__ == '__main__':
     # samples = random.sample(samples, 10)
     bleu_scores = []
 
-    for sample in samples:
+    for sample in tqdm(samples):
         sentence_in = sample['in']
         sentence_out = sample['out']
 
