@@ -55,11 +55,10 @@ if __name__ == '__main__':
             nbest_hyps = model.recognize(input=input, input_length=input_length, char_list=tgt_idx2char)
             # print(nbest_hyps)
 
-        out_list = []
         for hyp in nbest_hyps:
             out = hyp['yseq']
             out = [tgt_idx2char[idx] for idx in out]
             out = ''.join(out)
-            out_list.append(out)
-        out = out_list[0].replace('<sos>', '').replace('<eos>', '')
-        print('> {}'.format(out))
+            out = out.replace('<sos>', '').replace('<eos>', '')
+
+            print('> {}'.format(out))
