@@ -7,9 +7,9 @@ if __name__ == '__main__':
     init_lr = d_model ** (-0.5)
 
     lr_list = []
-    for step_num in range(1, 100000):
+    for step_num in range(1, 500000):
         # print(step_num)
-        lr = init_lr * min(step_num ** (-0.5), step_num * (warmup_steps ** (-1.5)))
+        lr = init_lr * min(step_num ** (-0.65), step_num * (warmup_steps ** (-1.5)))
 
         lr_list.append(lr)
 
