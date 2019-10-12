@@ -3,7 +3,7 @@ import time
 
 import numpy as np
 import torch
-from tensorboardX import SummaryWriter
+from torch.utils.tensorboard import SummaryWriter
 
 from config import device, print_freq, sos_id, eos_id, n_src_vocab, n_tgt_vocab, grad_clip, logger
 from data_gen import AiChallenger2017Dataset, pad_collate
