@@ -5,8 +5,8 @@
 
 ## 依赖
 
-- Python 3.5.2
-- PyTorch 1.0
+- Python 3.6.8
+- PyTorch 1.3.0
 
 ## 数据集
 
