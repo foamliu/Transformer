@@ -82,7 +82,7 @@ def get_data(in_file, out_file):
         tokens = jieba.cut(sentence_zh.strip())
         out_data = [sos_id] + encode_text(tgt_char2idx, tokens) + [eos_id]
 
-        if len(in_data) < maxlen_in and len(out_data) < maxlen_out:
+        if len(in_data) < maxlen_in and len(out_data) < maxlen_out and unk_id not in in_data and unk_id not in out_data:
             samples.append({'in': in_data, 'out': out_data})
     return samples
 
