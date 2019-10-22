@@ -36,7 +36,7 @@ if __name__ == '__main__':
     elapsed = time.time() - start
     logger.info('elapsed: {:.4f} seconds'.format(elapsed))
 
-    samples = random.sample(samples, 50)
+    samples = random.sample(samples, 10)
 
     for sample in samples:
         sentence_in = sample['in']
