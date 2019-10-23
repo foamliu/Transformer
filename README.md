@@ -45,35 +45,36 @@ $ python demo.py
 
 <pre>
 
-< you say that shit   or i  ll walk out this fucking door  .
-= 你再不说，妈的那我就下车。
-> 你这么说，不然我就走。
-< yes   a little   sir  . tell her to visit  . with a friend  .
-= 对，有点想，长官。让她来看你啊。就说是朋友。
-> 是的，有一点，先生。让她去见一个朋友。
-< boy   how am i gon na tell my mom about this  ?
-= 天啊，这叫我要怎么跟我妈妈说啊？
-> 孩子，我该怎么告诉我妈妈？
-< we need to know it  s there  . we need to know it  s safe  .
-= 我们只要知道它在那儿。我们只要知道它很安全。
-> 我们要知道它在那儿。我们要知道它安全。
-< before this race and meeting the public and all that
-= 在比赛，与公众见面和这些之前，
-> 在比赛结束之前，
-< and i  ve never been on one with a woman before  .
-= 我也没坐过有女人的船。
-> 我从没和一个女人在一起。
-< okay   i do n t want you in here anymore  . please leave  .
-= 我不想你在这儿了。请离开。
-> 好吧，我不想你再进来。请离开。
-< did you say something about us to her or not  ?
-= 你到底告不告诉我们她是谁？
-> 你跟她说了什么吗？
-< do n t be  . you did n t do it  .   you did n t   either  .
-= 别这样。你没错，你也没有。
-> 别这样。你没做。- 你也没有。
-< were you aware that she was twice treated for alcohol addiction  ?
-= 你知道她曾两次为酗酒问题做过治疗吗？
-> 你知道她有两次吃了两次？
+< oh   all right  . well   i  ll be   i  ll be this guy  .
+= 哦，好吧。嗯，那我，那我扮他吧。
+> 哦，好吧。好吧，我会的。
+< you do n t want to go upstairs   cause you get scared  .
+= 你害怕所以不想去。
+> 你不想上楼，因为你害怕了。
+< you do n t get to say what she was  . neither do you  !
+= 你没权利评论她是怎么一个人。你也没！
+> 你不能说她是谁。你也是！
+< if we do n t disable them   they  re just going to fly away
+= 如果我们不干掉它们，那它们就会飞走，
+> 如果我们不阻止他们，他们就会飞，
+< do n t take it personally   man   but i got ta make a living  .
+= 别以为这是你一个人的事业，哥们儿，我也要靠这过活的。
+> 别这么说，伙计，但我得活下去。
+< i seem to have lost an integral part of my plan  .
+= 我好像丢失了计划里的重要部分。
+> 我好像失去了我计划的一部分。
+< what would you do if you were n t out making yourself a better citizen  ?
+= 如果你不是外面，你会做什么成功的因素你自己一个较好的市民？
+> 如果你不做更好的公民你会怎么做？
+< i know  . they were at the lab a half   hour ago  .
+= 我知道。他们半小时前在冲洗室。
+> 我知道。他们半小时前在实验室。
+< the day after her kid kicked the crap out of my limo  .
+= 她女儿对我车窗又敲又砸的后一天。
+> 当她的孩子踢了我的车的那天。
+< you want it to go better than today   you need to get some rest  .
+= 你要想明天过得比今天好，就需要好好休息一下。
+> 你希望今天能更好一点，你需要休息一下。
+
 
 </pre>
