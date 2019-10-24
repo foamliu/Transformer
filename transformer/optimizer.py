@@ -9,6 +9,7 @@ class TransformerOptimizer(object):
         self.init_lr = d_model ** (-0.5)
         self.warmup_steps = warmup_steps
         self.lr = self.init_lr
+        self.min_lr = 1e-5
         self.step_num = 0
 
     def zero_grad(self):
@@ -21,5 +22,6 @@ class TransformerOptimizer(object):
     def _update_lr(self):
         self.step_num += 1
         self.lr = self.init_lr * min(self.step_num ** (-0.65), self.step_num * (self.warmup_steps ** (-1.5)))
+        self.lr = max(self.lr, self.min_lr)
         for param_group in self.optimizer.param_groups:
             param_group['lr'] = self.lr
