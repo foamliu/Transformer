@@ -4,12 +4,12 @@ from config import d_model
 class TransformerOptimizer(object):
     """A simple wrapper class for learning rate scheduling"""
 
-    def __init__(self, optimizer, warmup_steps=4000):
+    def __init__(self, optimizer, warmup_steps=4000, min_lr=1e-5):
         self.optimizer = optimizer
         self.init_lr = d_model ** (-0.5)
         self.warmup_steps = warmup_steps
         self.lr = self.init_lr
-        self.min_lr = 1e-5
+        self.min_lr = min_lr
         self.step_num = 0
 
     def zero_grad(self):
