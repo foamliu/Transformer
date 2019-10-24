@@ -45,36 +45,36 @@ $ python demo.py
 
 <pre>
 
-< oh   all right  . well   i  ll be   i  ll be this guy  .
-= 哦，好吧。嗯，那我，那我扮他吧。
-> 哦，好吧。好吧，我会的。
-< you do n t want to go upstairs   cause you get scared  .
-= 你害怕所以不想去。
-> 你不想上楼，因为你害怕了。
-< you do n t get to say what she was  . neither do you  !
-= 你没权利评论她是怎么一个人。你也没！
-> 你不能说她是谁。你也是！
-< if we do n t disable them   they  re just going to fly away
-= 如果我们不干掉它们，那它们就会飞走，
-> 如果我们不阻止他们，他们就会飞，
-< do n t take it personally   man   but i got ta make a living  .
-= 别以为这是你一个人的事业，哥们儿，我也要靠这过活的。
-> 别这么说，伙计，但我得活下去。
-< i seem to have lost an integral part of my plan  .
-= 我好像丢失了计划里的重要部分。
-> 我好像失去了我计划的一部分。
-< what would you do if you were n t out making yourself a better citizen  ?
-= 如果你不是外面，你会做什么成功的因素你自己一个较好的市民？
-> 如果你不做更好的公民你会怎么做？
-< i know  . they were at the lab a half   hour ago  .
-= 我知道。他们半小时前在冲洗室。
-> 我知道。他们半小时前在实验室。
-< the day after her kid kicked the crap out of my limo  .
-= 她女儿对我车窗又敲又砸的后一天。
-> 当她的孩子踢了我的车的那天。
-< you want it to go better than today   you need to get some rest  .
-= 你要想明天过得比今天好，就需要好好休息一下。
-> 你希望今天能更好一点，你需要休息一下。
+< i mean   i ca n t believe it  s really me up there  .
+= 我是说，我不敢相信那真的是我。
+> 我是说，真不敢相信我真的在那里。
+< they do n t know who they are or where they  re going  .
+= 他们不知道他们是谁不知道要去哪里。
+> 他们不知道他们是谁或者去哪。
+< you mean you want me to keep a secret  ? yes  .
+= 你要我帮你保密？对。
+> 你想让我保守秘密？是的。
+< where do you want my hands  ? in front of me   or behind me  ?
+= 想把我的手绑在哪？前面还是后面？
+> 你要我的手呢？在我面前，还是我后面？
+< i  ll be ready to take on scene command in three   two   one  . i  m in charge  .
+= 我准备接手现场指挥倒数三，二，一。现在由我负责。
+> 我准备好进入3号，2，1。我负责。
+< but i  m afraid the darkest hours of hell lie before you  .
+= 但恐怕地狱中最黑暗的时刻正在等待着你。
+> 但我担心在你面前最黑暗的时间。
+< and you have to comfort yourself with the fact that
+= 你必须安慰自己面对现实，
+> 你得安慰自己，
+< deep down   i know you do n t really like to try
+= 从下面进去你就是不愿意去试一下-
+> 我知道你不喜欢尝试，
+< sa   yong   nobody will blame you if we lose  .
+= 如果我们输了，没人会怪你的。
+> 如果我们输了，没人会怪你。
+< it  s going well   thanks to you  . i  ll talk to you later  .
+= 托您的福，都很好。我一会去找您。
+> 一切都很好，谢谢你。我晚点再跟你谈。
 
 
 </pre>
