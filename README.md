@@ -45,36 +45,37 @@ $ python demo.py
 
 <pre>
 
-< i mean   i ca n t believe it  s really me up there  .
-= 我是说，我不敢相信那真的是我。
-> 我是说，真不敢相信我真的在那里。
-< they do n t know who they are or where they  re going  .
-= 他们不知道他们是谁不知道要去哪里。
-> 他们不知道他们是谁或者去哪。
-< you mean you want me to keep a secret  ? yes  .
-= 你要我帮你保密？对。
-> 你想让我保守秘密？是的。
-< where do you want my hands  ? in front of me   or behind me  ?
-= 想把我的手绑在哪？前面还是后面？
-> 你要我的手呢？在我面前，还是我后面？
-< i  ll be ready to take on scene command in three   two   one  . i  m in charge  .
-= 我准备接手现场指挥倒数三，二，一。现在由我负责。
-> 我准备好进入3号，2，1。我负责。
-< but i  m afraid the darkest hours of hell lie before you  .
-= 但恐怕地狱中最黑暗的时刻正在等待着你。
-> 但我担心在你面前最黑暗的时间。
-< and you have to comfort yourself with the fact that
-= 你必须安慰自己面对现实，
-> 你得安慰自己，
-< deep down   i know you do n t really like to try
-= 从下面进去你就是不愿意去试一下-
-> 我知道你不喜欢尝试，
-< sa   yong   nobody will blame you if we lose  .
-= 如果我们输了，没人会怪你的。
-> 如果我们输了，没人会怪你。
-< it  s going well   thanks to you  . i  ll talk to you later  .
-= 托您的福，都很好。我一会去找您。
-> 一切都很好，谢谢你。我晚点再跟你谈。
+< but after our lone witness went missing   no charges were ever filed  .
+= 但当我们的唯一证人失踪后，案件没有新的进展。
+> 但在我们孤独的证人失踪后没有起诉。
+< my son is on this list  . his name is right there  .
+= 包括我儿子他也在死者名单上。
+> 我儿子在名单上。他的名字就在这里。
+< is there a decent spot around here to watch it  ?
+= 有没有个合适的地方让我们看比赛？
+> 有什么好地方可以看吗？
+< and forgive us our sins   as we forgive those that sin against us  .
+= 你宽恕了我们的罪孽，如同我们原谅那些得罪我们的人一样。
+> 原谅我们的罪恶，因为我们原谅那些对我们不利的罪。
+< aii the computers are down  . we even had some trouble finding your records  .
+= 所有电脑都不能工作了。我们差点找不到你的档案。
+> 所有电脑都坏了。我们甚至找不到你的记录。
+< i  m telling you   you  re gon na order the goddamn chicken sandwich  .
+= 我告诉你，你要点他妈的鸡肉三明治。
+> 我告诉你，你要点鸡肉三明治。
+< oh for the love of pete  ! go on to the bushes and do your business  .
+= 噢看在老天的份上！到灌木丛里解决掉吧。
+> 噢，看在彼得的份上！去树林吧。
+< do n t worry  . i  ll get you two where you need to go  . you  ve earned it  .
+= 别担心。我会带你们到要去的地方。这是你们应得的。
+> 别担心。我会带你们俩去你应得的。
+< i know she has children   so i assumed she had some level of independence  .
+= 我知道她有小孩，所以我想她有一定的独立能力。
+> 我知道她有孩子，所以我想她有自己的独立。
+< i almost forgot  . she told me to chew you out  .
+= 我差点忘了。她要我教训你。
+> 我差点忘了。她让我咬了你。
+
 
 
 </pre>
