@@ -45,35 +45,36 @@ $ python demo.py
 
 <pre>
 
-< but after our lone witness went missing   no charges were ever filed  .
-= 但当我们的唯一证人失踪后，案件没有新的进展。
-> 但在我们孤独的证人失踪后没有起诉。
-< my son is on this list  . his name is right there  .
-= 包括我儿子他也在死者名单上。
-> 我儿子在名单上。他的名字就在这里。
-< is there a decent spot around here to watch it  ?
-= 有没有个合适的地方让我们看比赛？
-> 有什么好地方可以看吗？
-< and forgive us our sins   as we forgive those that sin against us  .
-= 你宽恕了我们的罪孽，如同我们原谅那些得罪我们的人一样。
-> 原谅我们的罪恶，因为我们原谅那些对我们不利的罪。
-< aii the computers are down  . we even had some trouble finding your records  .
-= 所有电脑都不能工作了。我们差点找不到你的档案。
-> 所有电脑都坏了。我们甚至找不到你的记录。
-< i  m telling you   you  re gon na order the goddamn chicken sandwich  .
-= 我告诉你，你要点他妈的鸡肉三明治。
-> 我告诉你，你要点鸡肉三明治。
-< oh for the love of pete  ! go on to the bushes and do your business  .
-= 噢看在老天的份上！到灌木丛里解决掉吧。
-> 噢，看在彼得的份上！去树林吧。
-< do n t worry  . i  ll get you two where you need to go  . you  ve earned it  .
-= 别担心。我会带你们到要去的地方。这是你们应得的。
-> 别担心。我会带你们俩去你应得的。
-< i know she has children   so i assumed she had some level of independence  .
-= 我知道她有小孩，所以我想她有一定的独立能力。
-> 我知道她有孩子，所以我想她有自己的独立。
-< i almost forgot  . she told me to chew you out  .
-= 我差点忘了。她要我教训你。
-> 我差点忘了。她让我咬了你。
+< there are places in the world where girls do n t get educated   simply because they are girls  .
+= 在这个世界上某些地方的女孩，不能得到教育仅仅因为她是女孩。
+> 世界上有一些女孩没有受过教育，仅仅是因为她们是女孩。
+< i  ve noticed this black van parked outside the house every day  .
+= 我注意到有辆黑色的车每天都停在房子外面。
+> 我每天都注意到一辆黑色货车停在房子外面。
+< i mean   i feel like i  m okay  cause i passed on the crazy  .
+= 我是说，我觉得不错因为已经从疯狂里解脱了。
+> 我是说，我感觉很好因为我错过了疯狂。
+< i do n t know  . i was having this dream  . it  s all right  . i  m here now  .
+= 我不知道。我刚才做了个梦。没事了。我在这里。
+> 我不知道。我做了个梦。没关系。我在这儿。
+< and if the girls see you up here   they  re gon na take it
+= 如果她们看到你坐这她们会觉得
+> 如果女孩们看到你在这里，他们会接受的
+< getting filled out like an application constitutes being with a guy  .
+= 愿意跟小男孩在一起。
+> 就像和男人在一起一样。
+< every single brother in my fraternity has worn this suit  .
+= 兄弟会里每个人都穿成这样。
+> 我兄弟会的每个兄弟都穿这件衣服。
+< but i  m here in town   checking out some real estate   and
+= 但我进城来看房子，以及-
+> 但我在城里，查一些房地产，
+< hey   i was gon na come and see you today and say hi  .
+= 嘿，我今天打算过去看看你打个招呼。
+> 嘿，我今天想去看你然后打个招呼。
+< it was a good show  . stop saying it was a good show  . shh  !
+= 今晚的节目很好。不要再说它好了！
+> 是个好节目。别说是好节目了。嘘！
+
 
 </pre>
