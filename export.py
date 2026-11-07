@@ -22,5 +22,5 @@ if __name__ == '__main__':
     print('loading {}...'.format(filename))
     start = time.time()
     model = Transformer()
-    model.load_state_dict(torch.load(filename))
+    model.load_state_dict(torch.load(filename, weights_only=True))
     print('elapsed {} sec'.format(time.time() - start))
